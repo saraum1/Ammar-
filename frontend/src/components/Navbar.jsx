@@ -141,7 +141,7 @@ export default function Navbar() {
         </Link>
 
         {/* Nav links — centered, flex */}
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 2 }}>
+        <div className="nav-desktop-links" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 2 }}>
           {navLinks.map(link => {
             const active = location.pathname === link.to;
             return (
@@ -174,7 +174,7 @@ export default function Navbar() {
         </div>
 
         {/* Right actions */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, marginRight: "auto" }}>
+        <div className="nav-actions" style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, marginRight: "auto" }}>
           {!token ? (
             <>
               <Link to="/login" style={{
@@ -384,6 +384,8 @@ export default function Navbar() {
       <style>{`
         @media (max-width: 768px) {
           .nav-mobile-btn { display: flex !important; }
+          .nav-desktop-links { display: none !important; }
+          .nav-actions a, .nav-actions > div:not(:last-child) { display: none !important; }
         }
       `}</style>
     </>
