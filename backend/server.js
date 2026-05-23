@@ -3,7 +3,8 @@ require("dotenv").config();
 const app = require("./app");
 const sequelize = require("./config/db");
 
-const dbInit = sequelize.sync({ force: false })
+// Initialize DB once and cache the promise
+const dbInitPromise = sequelize.sync({ force: false })
   .then(async () => {
     try {
       await sequelize.query(`ALTER TABLE "Products" ALTER COLUMN "imageUrl" TYPE TEXT`);
@@ -11,15 +12,26 @@ const dbInit = sequelize.sync({ force: false })
     console.log("✅ DB ready");
   })
   .catch(err => {
-    app.set("dbError", err.message);
     console.error("❌ DB error:", err.message);
+    throw err;
   });
 
-const PORT = process.env.PORT || 3000;
+// For Vercel: export a handler that waits for DB before each request
+const handler = async (req, res) => {
+  try {
+    await dbInitPromise;
+  } catch (err) {
+    return res.status(500).json({ error: "DB connection failed", details: err.message });
+  }
+  app(req, res);
+};
+
+// For local: start server normally
 if (!process.env.VERCEL) {
-  dbInit.then(() => {
+  dbInitPromise.then(() => {
+    const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => console.log(`✅ السيرفر شغال على البورت ${PORT}`));
   });
 }
 
-module.exports = app;
+module.exports = handler;
