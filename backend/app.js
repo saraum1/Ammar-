@@ -13,6 +13,14 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// DB readiness middleware (set by server.js)
+app.use((req, res, next) => {
+  if (app.get("dbError")) {
+    return res.status(500).json({ error: "DB connection failed", details: app.get("dbError") });
+  }
+  next();
+});
+
 app.use("/api/auth",      require("./routes/auth"));
 app.use("/api/projects",  require("./routes/projects"));
 app.use("/api/companies", require("./routes/companies"));
