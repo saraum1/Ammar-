@@ -1,0 +1,22 @@
+export const T = {
+  dark:        "#1B3A2D",   
+  darkHover:   "#254E3D",   
+  darkSoft:    "#E6EFE9",   
+  bronze:      "#C4956A",   
+  bronzeDark:  "#A67C52",   
+  bronzeLight: "#F0E4D0",   
+  bronzeSoft:  "#FDF8F3",   
+  bg:          "#FAF7F0",   
+  bgCard:      "#FFFFFF",   
+  bgMuted:     "#F3EDE2",   
+  textDark:    "#1B3A2D",
+  textMed:     "#4B5563",
+  textLight:   "#9CA3AF",
+  border:      "#DDD0C0",
+  borderLight: "#EDE3D8",
+  success:     "#16a34a",
+  warning:     "#d97706",
+  danger:      "#dc2626",
+  info:        "#2563eb",
+};
+export default T;

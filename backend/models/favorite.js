@@ -1,0 +1,10 @@
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db");
+const User    = require("./user");
+const Product = require("./product");
+const Favorite = sequelize.define("Favorite", {}, { timestamps: true });
+User.hasMany(Favorite,    { foreignKey: "user_id",    onDelete: "CASCADE" });
+Favorite.belongsTo(User,  { foreignKey: "user_id" });
+Product.hasMany(Favorite,    { foreignKey: "product_id", onDelete: "CASCADE" });
+Favorite.belongsTo(Product,  { foreignKey: "product_id" });
+module.exports = Favorite;
