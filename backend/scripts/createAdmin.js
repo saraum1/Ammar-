@@ -1,6 +1,6 @@
 require("dotenv").config({ path: "../.env" });
 const sequelize = require("../config/db");
-const bcrypt    = require("bcrypt");
+const bcrypt    = require("bcryptjs");
 const User      = require("../models/user");
 async function main() {
   await sequelize.sync({ alter: true });

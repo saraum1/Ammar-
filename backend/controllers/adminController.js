@@ -1,6 +1,6 @@
 const Company = require("../models/company");
 const User    = require("../models/user");
-const bcrypt  = require("bcrypt");
+const bcrypt  = require("bcryptjs");
 exports.getPendingCompanies = async (req, res) => {
   try {
     const companies = await Company.findAll({

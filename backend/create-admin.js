@@ -1,5 +1,5 @@
 require("dotenv").config();
-const bcrypt    = require("bcrypt");
+const bcrypt    = require("bcryptjs");
 const sequelize = require("./config/db");
 const User      = require("./models/user");
 const [,, username, password] = process.argv;
