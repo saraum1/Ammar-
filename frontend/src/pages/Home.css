@@ -616,7 +616,7 @@
     height: auto;
   }
   .hero-text { align-items: center; padding: 0; }
-  .hero-heading-ar { font-size: 100px; letter-spacing: 0; }
+  .hero-heading-ar { font-size: 120px; letter-spacing: 2px; }
   .hero-heading-sub { font-size: 26px; }
   .hero-desc { font-size: 14px; max-width: 100%; }
   .hero-visual { display: none !important; }
@@ -638,7 +638,7 @@
 }
 
 @media (max-width: 480px) {
-  .hero-heading-ar { font-size: 90px; }
+  .hero-heading-ar { font-size: 100px; }
   .hero-badge { font-size: 11px; padding: 6px 12px; }
   .section-header h2 { font-size: 20px; }
   .cat-info h3 { font-size: 17px; }
