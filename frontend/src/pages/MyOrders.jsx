@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { ShoppingBag, Package, MapPin, ChevronDown, ChevronUp } from "lucide-react";
+import { ShoppingBag, MapPin, ChevronDown, ChevronUp } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-const STATUS_INFO = {
-  pending:   { label: "معلق",     bg: "#fef3c7", color: "#92400e" },
-  confirmed: { label: "مؤكد",    bg: "#dbeafe", color: "#1d4ed8" },
-  shipped:   { label: "جارٍ",    bg: "#fff3cd", color: "#b45309" },
-  delivered: { label: "مُسلَّم", bg: "#dcfce7", color: "#166534" },
-  cancelled: { label: "ملغى",    bg: "#fee2e2", color: "#991b1b" },
-};
+const STEPS = [
+  { key: "pending",   label: "تم الطلب",    icon: "🛒", sublabel: "استلمنا طلبك" },
+  { key: "confirmed", label: "تم التأكيد",  icon: "✅", sublabel: "المورد أكد الطلب" },
+  { key: "shipped",   label: "جارٍ التوصيل", icon: "🚚", sublabel: "في الطريق إليك" },
+  { key: "delivered", label: "تم التسليم",  icon: "📦", sublabel: "وصل بنجاح" },
+];
+
+const STEP_ORDER = ["pending", "confirmed", "shipped", "delivered"];
 
 export default function MyOrders() {
   const { token } = useAuth();
   const navigate  = useNavigate();
-  const [orders,  setOrders]  = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [orders,   setOrders]   = useState([]);
+  const [loading,  setLoading]  = useState(true);
   const [expanded, setExpanded] = useState(null);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function MyOrders() {
 
       {/* Header */}
       <div style={{ background: "white", borderBottom: "1px solid #f0e8df", padding: "36px 48px 28px" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto", display: "flex", alignItems: "center", gap: 14 }}>
+        <div style={{ maxWidth: 820, margin: "0 auto", display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ width: 48, height: 48, background: "linear-gradient(135deg,#A67C52,#C4956A)", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(196,149,106,0.3)" }}>
             <ShoppingBag size={22} color="white" />
           </div>
@@ -44,12 +45,12 @@ export default function MyOrders() {
       </div>
 
       {/* Body */}
-      <div style={{ maxWidth: 800, margin: "0 auto", padding: "28px 48px 80px" }}>
+      <div style={{ maxWidth: 820, margin: "0 auto", padding: "28px 48px 80px" }}>
         {loading ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {[1, 2, 3].map(i => (
-              <div key={i} style={{ background: "white", borderRadius: 18, padding: 22 }}>
-                <div style={{ height: 14, background: "#f3f4f6", borderRadius: 6, width: "40%", marginBottom: 10 }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {[1,2,3].map(i => (
+              <div key={i} style={{ background: "white", borderRadius: 20, padding: 24 }}>
+                <div style={{ height: 14, background: "#f3f4f6", borderRadius: 6, width: "40%", marginBottom: 12 }} />
                 <div style={{ height: 10, background: "#f3f4f6", borderRadius: 6, width: "70%" }} />
               </div>
             ))}
@@ -69,97 +70,159 @@ export default function MyOrders() {
             </button>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {orders.map(o => {
-              const st = STATUS_INFO[o.status] || STATUS_INFO.pending;
-              const isOpen = expanded === o.id;
-              return (
-                <div key={o.id} style={{ background: "white", borderRadius: 18, overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", borderRight: `4px solid ${st.color}` }}>
-
-                  {/* Row header */}
-                  <div
-                    style={{ padding: "18px 22px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}
-                    onClick={() => setExpanded(isOpen ? null : o.id)}
-                  >
-                    {/* LEFT: chevron + date */}
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      {isOpen ? <ChevronUp size={16} color="#9ca3af" /> : <ChevronDown size={16} color="#9ca3af" />}
-                      <div style={{ textAlign: "left" }}>
-                        <p style={{ fontSize: 12, color: "#9ca3af", margin: 0 }}>
-                          {new Date(o.createdAt).toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric" })}
-                        </p>
-                        <p style={{ fontSize: 13, fontWeight: 800, color: "#C4956A", margin: "3px 0 0" }}>{Number(o.totalPrice).toLocaleString("ar-SA")} ر.س</p>
-                      </div>
-                    </div>
-
-                    {/* RIGHT: company name + status */}
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <div style={{ textAlign: "right" }}>
-                        <p style={{ fontSize: 15, fontWeight: 800, color: "#111827", margin: 0 }}>{o.Company?.ownerName || "مورد"}</p>
-                        <p style={{ fontSize: 12, color: "#9ca3af", margin: "3px 0 0" }}>{Array.isArray(o.items) ? `${o.items.length} منتج` : ""}</p>
-                      </div>
-                      <span style={{ background: st.bg, color: st.color, fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 999, flexShrink: 0 }}>
-                        {st.label}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Expanded details */}
-                  {isOpen && (
-                    <div style={{ borderTop: "1px solid #f3f4f6", padding: "16px 22px 20px" }}>
-
-                      {/* Items */}
-                      {Array.isArray(o.items) && (
-                        <div style={{ background: "#f9fafb", borderRadius: 12, padding: "12px 16px", marginBottom: 14 }}>
-                          {o.items.map((item, i) => (
-                            <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: i < o.items.length - 1 ? 8 : 0, color: "#374151" }}>
-                              <span style={{ color: "#C4956A", fontWeight: 700 }}>{(item.unitPrice * item.qty).toLocaleString("ar-SA")} ر.س</span>
-                              <span>{item.name} × {item.qty}</span>
-                            </div>
-                          ))}
-                          <div style={{ borderTop: "1px solid #e5e7eb", marginTop: 10, paddingTop: 10, display: "flex", justifyContent: "space-between", fontWeight: 800, fontSize: 14 }}>
-                            <span style={{ color: "#C4956A" }}>{Number(o.totalPrice).toLocaleString("ar-SA")} ر.س</span>
-                            <span>الإجمالي</span>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Address */}
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#6b7280", marginBottom: o.notes ? 8 : 0 }}>
-                        <span>{o.address}</span>
-                        <MapPin size={13} color="#C4956A" />
-                      </div>
-                      {o.notes && (
-                        <p style={{ fontSize: 13, color: "#6b7280", margin: "8px 0 0", textAlign: "right" }}>📝 {o.notes}</p>
-                      )}
-
-                      {/* Status timeline */}
-                      <div style={{ display: "flex", gap: 6, marginTop: 16, flexWrap: "wrap" }}>
-                        {["pending","confirmed","shipped","delivered"].map(s => {
-                          const steps = ["pending","confirmed","shipped","delivered"];
-                          const done  = steps.indexOf(o.status) >= steps.indexOf(s);
-                          const info  = STATUS_INFO[s];
-                          return (
-                            <div key={s} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, fontWeight: done ? 700 : 400, color: done ? info.color : "#9ca3af", background: done ? info.bg : "#f3f4f6", padding: "4px 12px", borderRadius: 999, transition: "all 0.2s" }}>
-                              <span style={{ width: 7, height: 7, borderRadius: "50%", background: done ? info.color : "#d1d5db", flexShrink: 0 }} />
-                              {info.label}
-                            </div>
-                          );
-                        })}
-                        {o.status === "cancelled" && (
-                          <div style={{ fontSize: 12, fontWeight: 700, color: STATUS_INFO.cancelled.color, background: STATUS_INFO.cancelled.bg, padding: "4px 12px", borderRadius: 999 }}>
-                            ملغى
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {orders.map(o => <OrderCard key={o.id} order={o} expanded={expanded === o.id} onToggle={() => setExpanded(expanded === o.id ? null : o.id)} />)}
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function OrderCard({ order: o, expanded, onToggle }) {
+  const isCancelled = o.status === "cancelled";
+  const currentStep = STEP_ORDER.indexOf(o.status);
+  const progressPct = isCancelled ? 0 : (currentStep / (STEP_ORDER.length - 1)) * 100;
+
+  return (
+    <div style={{
+      background: "white", borderRadius: 22,
+      boxShadow: "0 2px 14px rgba(0,0,0,0.06)",
+      overflow: "hidden",
+      border: isCancelled ? "1.5px solid #fecaca" : "1.5px solid transparent",
+    }}>
+
+      {/* ── Header ── */}
+      <div
+        onClick={onToggle}
+        style={{ padding: "20px 24px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {expanded ? <ChevronUp size={16} color="#9ca3af" /> : <ChevronDown size={16} color="#9ca3af" />}
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 800, color: "#C4956A", margin: 0 }}>
+              {Number(o.totalPrice).toLocaleString("ar-SA")} ر.س
+            </p>
+            <p style={{ fontSize: 11, color: "#9ca3af", margin: "2px 0 0" }}>
+              {new Date(o.createdAt).toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric" })}
+            </p>
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ textAlign: "right" }}>
+            <p style={{ fontSize: 15, fontWeight: 800, color: "#111827", margin: 0 }}>{o.Company?.ownerName || "مورد"}</p>
+            <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>
+              {Array.isArray(o.items) ? `${o.items.length} منتج` : ""}
+            </p>
+          </div>
+          {isCancelled ? (
+            <span style={{ background: "#fee2e2", color: "#991b1b", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 999 }}>
+              ملغى ❌
+            </span>
+          ) : (
+            <span style={{
+              background: currentStep === STEP_ORDER.length - 1 ? "#dcfce7" : "#fff7ed",
+              color:      currentStep === STEP_ORDER.length - 1 ? "#166534" : "#C4956A",
+              fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 999
+            }}>
+              {STEPS[currentStep]?.label || "معلق"}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* ── Stepper ── */}
+      {!isCancelled && (
+        <div style={{ padding: "0 24px 20px" }}>
+          <div style={{ position: "relative" }}>
+            {/* خط الخلفية */}
+            <div style={{
+              position: "absolute", top: 18,
+              right: "calc(12.5% + 18px)", left: "calc(12.5% + 18px)",
+              height: 3, background: "#f0e8df", borderRadius: 999, zIndex: 0,
+            }} />
+            {/* خط التقدم */}
+            <div style={{
+              position: "absolute", top: 18,
+              right: "calc(12.5% + 18px)",
+              width: `calc(${progressPct}% * 0.75)`,
+              height: 3,
+              background: "linear-gradient(90deg,#A67C52,#C4956A)",
+              borderRadius: 999, zIndex: 1,
+              transition: "width 0.6s ease",
+            }} />
+
+            <div style={{ display: "flex", justifyContent: "space-between", position: "relative", zIndex: 2 }}>
+              {STEPS.map((step, i) => {
+                const done    = currentStep >= i;
+                const current = currentStep === i;
+                return (
+                  <div key={step.key} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    {/* الدائرة */}
+                    <div style={{
+                      width: 36, height: 36, borderRadius: "50%",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 16,
+                      background: done ? (i === STEP_ORDER.length - 1 ? "#dcfce7" : "#F0E4D0") : "#f9fafb",
+                      border: done
+                        ? `2.5px solid ${i === STEP_ORDER.length - 1 ? "#4ade80" : "#C4956A"}`
+                        : current ? "2.5px dashed #C4956A" : "2.5px solid #e5e7eb",
+                      boxShadow: current ? "0 0 0 5px #fff7ed" : "none",
+                      transition: "all 0.3s",
+                    }}>
+                      {step.icon}
+                    </div>
+                    {/* اسم الخطوة */}
+                    <p style={{
+                      fontSize: 11, fontWeight: 700, marginTop: 7, textAlign: "center",
+                      color: done ? (i === STEP_ORDER.length - 1 ? "#16a34a" : "#1B3A2D") : "#9ca3af",
+                    }}>
+                      {step.label}
+                    </p>
+                    {/* وصف فرعي فقط للخطوة الحالية */}
+                    {current && (
+                      <p style={{ fontSize: 10, color: "#C4956A", marginTop: 2, textAlign: "center", fontWeight: 600 }}>
+                        {step.sublabel}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── تفاصيل (عند الفتح) ── */}
+      {expanded && (
+        <div style={{ borderTop: "1px solid #f3f4f6", padding: "16px 24px 22px" }}>
+
+          {/* المنتجات */}
+          {Array.isArray(o.items) && (
+            <div style={{ background: "#f9fafb", borderRadius: 14, padding: "12px 16px", marginBottom: 14 }}>
+              {o.items.map((item, i) => (
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: i < o.items.length - 1 ? 8 : 0, color: "#374151" }}>
+                  <span style={{ color: "#C4956A", fontWeight: 700 }}>{(item.unitPrice * item.qty).toLocaleString("ar-SA")} ر.س</span>
+                  <span>{item.name} × {item.qty}</span>
+                </div>
+              ))}
+              <div style={{ borderTop: "1px solid #e5e7eb", marginTop: 10, paddingTop: 10, display: "flex", justifyContent: "space-between", fontWeight: 800, fontSize: 14 }}>
+                <span style={{ color: "#C4956A" }}>{Number(o.totalPrice).toLocaleString("ar-SA")} ر.س</span>
+                <span>الإجمالي</span>
+              </div>
+            </div>
+          )}
+
+          {/* العنوان */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#6b7280", marginBottom: o.notes ? 8 : 0 }}>
+            <MapPin size={13} color="#C4956A" />
+            <span>{o.address}</span>
+          </div>
+          {o.notes && (
+            <p style={{ fontSize: 13, color: "#6b7280", margin: "8px 0 0", textAlign: "right" }}>📝 {o.notes}</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
