@@ -68,6 +68,18 @@ exports.updateMyProfile = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+exports.requestDelete = async (req, res) => {
+  try {
+    const company = await Company.findOne({ where: { user_id: req.user.id } });
+    if (!company) return res.status(404).json({ message: "لم يتم العثور على بيانات الشركة" });
+    company.deleteRequested = true;
+    company.deleteRequestNote = req.body.note || "";
+    await company.save();
+    res.json({ status: "success", message: "تم إرسال طلب الحذف، سيتم مراجعته من قبل الإدارة" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 exports.uploadCover = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: "لم يتم رفع أي صورة" });

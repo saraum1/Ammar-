@@ -13,6 +13,7 @@ const {
   uploadDocByCredentials,
   updateProfile,
   googleAuth,
+  deleteAccount,
 } = require("../controllers/authController");
 router.post("/register",          register);
 router.post("/login",             login);
@@ -22,6 +23,7 @@ router.post("/forgot-password",   forgotPassword);
 router.post("/reset-password",    resetPassword);
 router.post("/change-password",   authMiddleware, changePassword);
 router.patch("/profile",          authMiddleware, updateProfile);
+router.delete("/account",         authMiddleware, deleteAccount);
 router.post("/upload-cr-doc",     authMiddleware, uploadPDF.single("crDoc"), uploadRegistrationDoc);
 router.post("/upload-cr-doc-open", uploadPDF.single("crDoc"), uploadDocByCredentials);
 module.exports = router;

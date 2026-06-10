@@ -41,10 +41,7 @@ export default function RegisterCompany() {
       !form.email ||
       !form.username ||
       !form.password ||
-      !form.type ||
-      !form.commercialRegistrationNumber ||
-      !form.vatNumber ||
-      !form.establishmentNumber
+      !form.type
     ) {
       newErrors.general = "جميع الحقول المطلوبة يجب تعبئتها";
     }
@@ -270,7 +267,7 @@ export default function RegisterCompany() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">رقم السجل التجاري</label>
+            <label className="block text-sm font-medium mb-2 text-gray-700">رقم السجل التجاري <span className="text-gray-400 font-normal">(اختياري)</span></label>
             <input
               name="commercialRegistrationNumber"
               value={form.commercialRegistrationNumber}
@@ -287,7 +284,7 @@ export default function RegisterCompany() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">الرقم الضريبي VAT</label>
+            <label className="block text-sm font-medium mb-2 text-gray-700">الرقم الضريبي VAT <span className="text-gray-400 font-normal">(اختياري)</span></label>
             <input
               name="vatNumber"
               value={form.vatNumber}
@@ -302,7 +299,7 @@ export default function RegisterCompany() {
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium mb-2 text-gray-700">رقم المنشأة</label>
+            <label className="block text-sm font-medium mb-2 text-gray-700">رقم المنشأة <span className="text-gray-400 font-normal">(اختياري)</span></label>
             <input
               name="establishmentNumber"
               value={form.establishmentNumber}

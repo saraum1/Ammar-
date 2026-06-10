@@ -22,10 +22,14 @@ exports.register = async (req, res) => {
     if (!/^05\d{8}$/.test(phone))
       return res.status(400).json({ message: "رقم الجوال يجب أن يكون 10 أرقام ويبدأ بـ 05" });
     if (role === "company") {
-      if (!ownerName || !type || !commercialRegistrationNumber || !vatNumber || !establishmentNumber)
-        return res.status(400).json({ message: "جميع بيانات الشركة مطلوبة" });
-      if (isNaN(commercialRegistrationNumber) || isNaN(vatNumber) || isNaN(establishmentNumber))
-        return res.status(400).json({ message: "أرقام السجل التجاري والضريبي والمنشأة يجب أن تكون أرقاماً" });
+      if (!ownerName || !type)
+        return res.status(400).json({ message: "اسم المالك ونوع الشركة مطلوبان" });
+      if (commercialRegistrationNumber && isNaN(commercialRegistrationNumber))
+        return res.status(400).json({ message: "رقم السجل التجاري يجب أن يكون رقماً" });
+      if (vatNumber && isNaN(vatNumber))
+        return res.status(400).json({ message: "الرقم الضريبي يجب أن يكون رقماً" });
+      if (establishmentNumber && isNaN(establishmentNumber))
+        return res.status(400).json({ message: "رقم المنشأة يجب أن يكون رقماً" });
     }
     if (await User.findOne({ where: { email } }))
       return res.status(400).json({ message: "البريد الإلكتروني مستخدم مسبقاً" });
@@ -216,6 +220,19 @@ exports.changePassword = async (req, res) => {
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
     res.status(200).json({ status: "success", message: "تم تغيير كلمة المرور بنجاح" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+exports.deleteAccount = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    if (!user) return res.status(404).json({ message: "المستخدم غير موجود" });
+    if (user.role === "company") {
+      return res.status(403).json({ message: "حسابات الشركات لا يمكن حذفها مباشرة، يرجى إرسال طلب حذف من لوحة التحكم" });
+    }
+    await user.destroy();
+    res.json({ status: "success", message: "تم حذف الحساب بنجاح" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

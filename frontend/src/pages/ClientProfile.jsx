@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { User, Phone, Lock, Send, Clock, CheckCircle, XCircle } from "lucide-react";
+import { User, Phone, Lock, Send, Clock, CheckCircle, XCircle, Trash2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 const STATUS = {
@@ -8,8 +8,31 @@ const STATUS = {
   rejected: { label: "مرفوض", color: "#991b1b", bg: "#fee2e2", icon: <XCircle size={13}/> },
 };
 export default function ClientProfile() {
-  const { token, user, login } = useAuth();
+  const { token, user, login, logout } = useAuth();
   const navigate = useNavigate();
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteErr, setDeleteErr] = useState("");
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    setDeleteErr("");
+    try {
+      const res = await fetch("/api/auth/account", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        logout();
+        navigate("/");
+      } else {
+        const d = await res.json();
+        setDeleteErr(d.message || "حدث خطأ");
+        setDeleteConfirm(false);
+      }
+    } catch { setDeleteErr("تعذر الاتصال بالسيرفر"); setDeleteConfirm(false); }
+    finally { setDeleting(false); }
+  };
   if (!token) {
     return (
       <div className="min-h-screen bg-[#FAF7F0] flex items-center justify-center" dir="rtl">
@@ -165,6 +188,34 @@ export default function ClientProfile() {
               <button onClick={handleChangePassword} disabled={pwLoad} className="w-full bg-gray-900 text-white py-3 rounded-xl font-bold hover:opacity-90 disabled:opacity-50 transition-opacity">
                 {pwLoad ? "جاري التغيير..." : "تغيير كلمة المرور"}
               </button>
+            </div>
+            {/* حذف الحساب */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-red-100">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-red-500">
+                  <Trash2 size={20}/>
+                </div>
+                <h2 className="text-lg font-bold text-red-600">حذف الحساب</h2>
+              </div>
+              <p className="text-sm text-gray-500 mb-4 text-right">سيتم حذف حسابك وجميع بياناتك نهائياً ولا يمكن التراجع عن هذه العملية.</p>
+              {deleteErr && <p className="text-red-500 text-sm mb-3">{deleteErr}</p>}
+              {!deleteConfirm ? (
+                <button onClick={() => setDeleteConfirm(true)} className="w-full border-2 border-red-200 text-red-500 py-3 rounded-xl font-bold hover:bg-red-50 transition-colors">
+                  حذف حسابي
+                </button>
+              ) : (
+                <div>
+                  <p className="text-center text-sm font-bold text-red-600 mb-3">هل أنت متأكد؟ هذا الإجراء لا يمكن التراجع عنه</p>
+                  <div className="flex gap-3">
+                    <button onClick={() => setDeleteConfirm(false)} className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">
+                      إلغاء
+                    </button>
+                    <button onClick={handleDeleteAccount} disabled={deleting} className="flex-1 bg-red-500 text-white py-3 rounded-xl font-bold hover:bg-red-600 disabled:opacity-50 transition-colors">
+                      {deleting ? "جاري الحذف..." : "نعم، احذف حسابي"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

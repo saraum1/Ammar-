@@ -6,12 +6,18 @@ const {
   getAllCompanies,
   approveCompany,
   rejectCompany,
-  createAdmin
+  createAdmin,
+  getDeleteRequests,
+  deleteCompany,
+  rejectDeleteRequest,
 } = require("../controllers/adminController");
 router.post("/create-admin", createAdmin);
 router.use(adminAuth);
-router.get("/companies/pending", getPendingCompanies);
-router.get("/companies/all",     getAllCompanies);
-router.patch("/companies/:id/approve", approveCompany);
-router.patch("/companies/:id/reject",  rejectCompany);
+router.get("/companies/pending",           getPendingCompanies);
+router.get("/companies/all",               getAllCompanies);
+router.get("/companies/delete-requests",   getDeleteRequests);
+router.patch("/companies/:id/approve",     approveCompany);
+router.patch("/companies/:id/reject",      rejectCompany);
+router.delete("/companies/:id",            deleteCompany);
+router.patch("/companies/:id/reject-delete", rejectDeleteRequest);
 module.exports = router;

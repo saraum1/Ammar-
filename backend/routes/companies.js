@@ -9,6 +9,7 @@ const {
   getMyProfile,
   updateMyProfile,
   uploadCover,
+  requestDelete,
 } = require("../controllers/companyController");
 
 router.get("/",    getCompanies);
@@ -16,6 +17,7 @@ router.get("/",    getCompanies);
 router.get("/me/profile",   auth, getMyProfile);
 router.patch("/me/profile", auth, updateMyProfile);
 router.post("/me/cover",    auth, uploadImage.single("cover"), uploadCover);
+router.post("/me/request-delete", auth, requestDelete);
 
 router.get("/:id", getCompany);
 

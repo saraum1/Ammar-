@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CheckCircle, XCircle, Clock, Building2, Phone, Mail, FileText } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Building2, Phone, Mail, FileText, Trash2, Users } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 const TYPE_MAP = {
@@ -23,10 +23,12 @@ export default function AdminPanel() {
   const fetchCompanies = async (type = "pending") => {
     setLoading(true);
     try {
-      const url = type === "pending"
-        ? "/api/admin/companies/pending"
-        : "/api/admin/companies/all";
-      const res  = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+      const urlMap = {
+        pending:  "/api/admin/companies/pending",
+        all:      "/api/admin/companies/all",
+        delreqs:  "/api/admin/companies/delete-requests",
+      };
+      const res  = await fetch(urlMap[type] || urlMap.pending, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       if (res.ok) setCompanies(data.data);
     } finally {
@@ -34,6 +36,7 @@ export default function AdminPanel() {
     }
   };
   useEffect(() => { fetchCompanies(tab); }, [tab]);
+
   const handleApprove = async (id) => {
     await fetch(`/api/admin/companies/${id}/approve`, {
       method: "PATCH",
@@ -52,6 +55,22 @@ export default function AdminPanel() {
     setActiveId(null);
     fetchCompanies(tab);
   };
+  const handleDelete = async (id) => {
+    if (!window.confirm("هل أنت متأكد من حذف هذه الشركة نهائياً؟")) return;
+    await fetch(`/api/admin/companies/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    fetchCompanies(tab);
+  };
+  const handleRejectDelete = async (id) => {
+    await fetch(`/api/admin/companies/${id}/reject-delete`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    fetchCompanies(tab);
+  };
+
   const statusBadge = (s) => {
     const map = {
       pending:  { bg: "#fef3c7", color: "#92400e", label: "معلق",   icon: <Clock size={12} /> },
@@ -68,7 +87,7 @@ export default function AdminPanel() {
   return (
     <div style={{ background: "#FAF7F0", minHeight: "100vh" }} dir="rtl">
       <div style={{ background: "white", borderBottom: "1px solid #e5e7eb", padding: "28px 56px" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
           <div>
             <h1 style={{ fontSize: 26, fontWeight: 900, margin: 0 }}>لوحة إدارة عمار</h1>
             <p style={{ color: "#6b7280", margin: "4px 0 0", fontSize: 14 }}>مراجعة وموافقة طلبات الشركات</p>
@@ -76,6 +95,7 @@ export default function AdminPanel() {
           <div style={{ display: "flex", gap: 6 }}>
             <TabBtn active={tab === "pending"} onClick={() => setTab("pending")} label="المعلقة" />
             <TabBtn active={tab === "all"}     onClick={() => setTab("all")}     label="الكل" />
+            <TabBtn active={tab === "delreqs"} onClick={() => setTab("delreqs")} label="طلبات الحذف" danger />
           </div>
         </div>
       </div>
@@ -85,7 +105,11 @@ export default function AdminPanel() {
         ) : companies.length === 0 ? (
           <div style={{ textAlign: "center", padding: 60, color: "#9ca3af" }}>
             <CheckCircle size={48} style={{ margin: "0 auto 16px", opacity: 0.3 }} />
-            <p>{tab === "pending" ? "لا توجد شركات معلقة 🎉" : "لا توجد شركات مسجّلة"}</p>
+            <p>
+              {tab === "pending"  ? "لا توجد شركات معلقة 🎉" :
+               tab === "delreqs" ? "لا توجد طلبات حذف حالياً" :
+               "لا توجد شركات مسجّلة"}
+            </p>
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
@@ -93,8 +117,11 @@ export default function AdminPanel() {
               <CompanyCard
                 key={company.id}
                 company={company}
+                tab={tab}
                 onApprove={() => handleApprove(company.id)}
                 onReject={() => setActiveId(company.id)}
+                onDelete={() => handleDelete(company.id)}
+                onRejectDelete={() => handleRejectDelete(company.id)}
                 isRejectOpen={activeId === company.id}
                 note={note}
                 setNote={setNote}
@@ -109,14 +136,14 @@ export default function AdminPanel() {
     </div>
   );
 }
-function TabBtn({ active, onClick, label }) {
+function TabBtn({ active, onClick, label, danger }) {
   return (
     <button
       onClick={onClick}
       style={{
         padding: "8px 18px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 14, fontWeight: 700,
-        background: active ? "#C4956A" : "#f3f4f6",
-        color:      active ? "white"   : "#374151",
+        background: active ? (danger ? "#ef4444" : "#C4956A") : "#f3f4f6",
+        color:      active ? "white" : (danger ? "#ef4444" : "#374151"),
         transition: "all 0.15s"
       }}
     >
@@ -124,10 +151,10 @@ function TabBtn({ active, onClick, label }) {
     </button>
   );
 }
-function CompanyCard({ company, onApprove, onReject, isRejectOpen, note, setNote, confirmReject, cancelReject, statusBadge }) {
+function CompanyCard({ company, tab, onApprove, onReject, onDelete, onRejectDelete, isRejectOpen, note, setNote, confirmReject, cancelReject, statusBadge }) {
   const u = company.User || {};
   return (
-    <div style={{ background: "white", borderRadius: 20, padding: "26px 30px", boxShadow: "0 4px 16px rgba(0,0,0,0.06)" }}>
+    <div style={{ background: "white", borderRadius: 20, padding: "26px 30px", boxShadow: "0 4px 16px rgba(0,0,0,0.06)", border: company.deleteRequested ? "2px solid #fecaca" : "none" }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 18 }}>
         <div style={{ textAlign: "right" }}>
           <h3 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>{company.ownerName}</h3>
@@ -135,19 +162,24 @@ function CompanyCard({ company, onApprove, onReject, isRejectOpen, note, setNote
             {u.firstName} {u.lastName} — @{u.username}
           </p>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
           <span style={{ background: "#fff1e8", color: "#C4956A", fontSize: 12, fontWeight: 700, padding: "3px 10px", borderRadius: 999 }}>
             {TYPE_MAP[company.type] || company.type}
           </span>
           {statusBadge(company.approvalStatus)}
+          {company.clientCount !== undefined && (
+            <span style={{ background: "#eff6ff", color: "#2563eb", fontSize: 12, fontWeight: 700, padding: "3px 10px", borderRadius: 999, display: "inline-flex", alignItems: "center", gap: 4 }}>
+              <Users size={12} /> {company.clientCount} عميل
+            </span>
+          )}
         </div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 30px", marginBottom: 18 }}>
         <InfoRow icon={<Mail size={14} />}     label={u.email} />
         <InfoRow icon={<Phone size={14} />}    label={u.phone} />
-        <InfoRow icon={<FileText size={14} />} label={`سجل: ${company.commercialRegistrationNumber}`} />
-        <InfoRow icon={<FileText size={14} />} label={`ضريبي: ${company.vatNumber}`} />
-        <InfoRow icon={<Building2 size={14} />} label={`منشأة: ${company.establishmentNumber}`} />
+        {company.commercialRegistrationNumber && <InfoRow icon={<FileText size={14} />} label={`سجل: ${company.commercialRegistrationNumber}`} />}
+        {company.vatNumber && <InfoRow icon={<FileText size={14} />} label={`ضريبي: ${company.vatNumber}`} />}
+        {company.establishmentNumber && <InfoRow icon={<Building2 size={14} />} label={`منشأة: ${company.establishmentNumber}`} />}
         <InfoRow icon={<Clock size={14} />} label={`تاريخ التسجيل: ${new Date(company.createdAt).toLocaleDateString("ar-SA")}`} />
       </div>
       {company.commercialRegistrationFile ? (
@@ -169,7 +201,39 @@ function CompanyCard({ company, onApprove, onReject, isRejectOpen, note, setNote
           سبب الرفض: {company.approvalNote}
         </p>
       )}
-      {company.approvalStatus === "pending" && (
+      {/* Delete request note */}
+      {company.deleteRequested && company.deleteRequestNote && (
+        <p style={{ color: "#92400e", fontSize: 13, background: "#fef3c7", padding: "8px 14px", borderRadius: 10, marginBottom: 14 }}>
+          📝 سبب طلب الحذف: {company.deleteRequestNote}
+        </p>
+      )}
+
+      {/* Action buttons */}
+      {tab === "delreqs" ? (
+        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", flexWrap: "wrap" }}>
+          <button
+            onClick={onRejectDelete}
+            style={{ display: "flex", alignItems: "center", gap: 6, background: "#f3f4f6", color: "#374151", border: "none", borderRadius: 10, padding: "9px 20px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
+          >
+            رفض الطلب
+          </button>
+          <button
+            onClick={onDelete}
+            style={{ display: "flex", alignItems: "center", gap: 6, background: "#fee2e2", color: "#991b1b", border: "none", borderRadius: 10, padding: "9px 20px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
+          >
+            حذف الشركة نهائياً <Trash2 size={15} />
+          </button>
+        </div>
+      ) : tab === "all" ? (
+        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
+          <button
+            onClick={onDelete}
+            style={{ display: "flex", alignItems: "center", gap: 6, background: "#fee2e2", color: "#991b1b", border: "none", borderRadius: 10, padding: "9px 20px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
+          >
+            <Trash2 size={15} /> حذف
+          </button>
+        </div>
+      ) : company.approvalStatus === "pending" ? (
         <>
           {!isRejectOpen ? (
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
@@ -206,7 +270,7 @@ function CompanyCard({ company, onApprove, onReject, isRejectOpen, note, setNote
             </div>
           )}
         </>
-      )}
+      ) : null}
     </div>
   );
 }

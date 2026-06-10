@@ -16,17 +16,17 @@ const Company = sequelize.define("Company", {
   },
   commercialRegistrationNumber: {
     type: DataTypes.BIGINT,
-    allowNull: false,
+    allowNull: true,
     validate: { isNumeric: true }
   },
   vatNumber: {
     type: DataTypes.BIGINT,
-    allowNull: false,
+    allowNull: true,
     validate: { isNumeric: true }
   },
   establishmentNumber: {
     type: DataTypes.BIGINT,
-    allowNull: false,
+    allowNull: true,
     validate: { isNumeric: true }
   },
   commercialRegistrationFile: {
@@ -62,6 +62,14 @@ const Company = sequelize.define("Company", {
     defaultValue: "pending"
   },
   approvalNote: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  deleteRequested: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  deleteRequestNote: {
     type: DataTypes.STRING,
     allowNull: true
   },

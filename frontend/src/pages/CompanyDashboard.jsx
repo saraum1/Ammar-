@@ -67,6 +67,10 @@ export default function CompanyDashboard() {
   const [pwErr,  setPwErr]  = useState("");
   const [pwOk,   setPwOk]   = useState(false);
   const [pwLoad, setPwLoad] = useState(false);
+  const [deleteNote,    setDeleteNote]    = useState("");
+  const [deleteReqSent, setDeleteReqSent] = useState(false);
+  const [deleteReqLoad, setDeleteReqLoad] = useState(false);
+  const [deleteReqErr,  setDeleteReqErr]  = useState("");
 
   const [orders,      setOrders]      = useState([]);
   const [meetings,    setMeetings]    = useState([]);
@@ -422,6 +426,23 @@ export default function CompanyDashboard() {
       setTimeout(() => setPwOk(false), 3000);
     } catch { setPwErr("تعذر الاتصال بالسيرفر"); }
     finally { setPwLoad(false); }
+  };
+
+  const handleRequestDelete = async () => {
+    setDeleteReqErr("");
+    setDeleteReqLoad(true);
+    try {
+      const r = await fetch("/api/companies/me/request-delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ note: deleteNote })
+      });
+      const d = await r.json();
+      if (!r.ok) { setDeleteReqErr(d.message || "حدث خطأ"); return; }
+      setDeleteReqSent(true);
+      setProfile(prev => prev ? { ...prev, deleteRequested: true } : prev);
+    } catch { setDeleteReqErr("تعذر الاتصال بالسيرفر"); }
+    finally { setDeleteReqLoad(false); }
   };
 
   const openAddProd  = () => { setProdForm({ name: "", description: "", price: "", unit: "وحدة", category: "" }); setProdImage(null); setProdPreview(null); setEditingProd(null); setProdError(""); setShowProdForm(true); };
@@ -1032,6 +1053,7 @@ export default function CompanyDashboard() {
         )}
 
         {tab === "profile" && !loading && (
+          <>
           <div style={{ background: "white", borderRadius: 20, padding: 30, boxShadow: "0 4px 16px rgba(0,0,0,0.06)", marginTop: 20 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
               <div style={{ width: 38, height: 38, background: "#F0E4D0", borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", color: "#C4956A" }}>
@@ -1065,6 +1087,44 @@ export default function CompanyDashboard() {
               {pwLoad ? "جاري التغيير..." : "تغيير كلمة المرور"}
             </button>
           </div>
+
+          {/* طلب حذف الحساب */}
+          <div style={{ background: "white", borderRadius: 20, padding: 30, boxShadow: "0 4px 16px rgba(0,0,0,0.06)", marginTop: 20, border: "1px solid #fee2e2" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+              <div style={{ width: 38, height: 38, background: "#fef2f2", borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", color: "#ef4444" }}>🗑️</div>
+              <h2 style={{ fontSize: 17, fontWeight: 800, margin: 0, textAlign: "right", color: "#ef4444" }}>طلب حذف الحساب</h2>
+            </div>
+            {(profile?.deleteRequested || deleteReqSent) ? (
+              <div style={{ background: "#fef3c7", color: "#92400e", borderRadius: 12, padding: "14px 18px", textAlign: "right", fontSize: 14 }}>
+                ⏳ تم إرسال طلب الحذف — سيتم مراجعته من قبل الإدارة وسيتم التواصل معك قريباً.
+              </div>
+            ) : (
+              <>
+                <p style={{ fontSize: 13, color: "#6b7280", marginBottom: 14, textAlign: "right", lineHeight: 1.7 }}>
+                  لا يمكن حذف حساب الشركة مباشرة لحماية بيانات العملاء. يمكنك إرسال طلب حذف وسيراجعه الإدارة.
+                </p>
+                {deleteReqErr && <div style={{ background: "#fee2e2", color: "#991b1b", borderRadius: 10, padding: "10px 14px", fontSize: 13, marginBottom: 12, textAlign: "right" }}>⚠️ {deleteReqErr}</div>}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6, textAlign: "right" }}>سبب طلب الحذف (اختياري)</label>
+                  <textarea
+                    value={deleteNote}
+                    onChange={e => setDeleteNote(e.target.value)}
+                    placeholder="اكتب سبب الحذف..."
+                    rows={3}
+                    style={{ width: "100%", border: "1.5px solid #fecaca", borderRadius: 10, padding: "10px 14px", fontSize: 14, outline: "none", textAlign: "right", resize: "none", boxSizing: "border-box", fontFamily: "inherit" }}
+                  />
+                </div>
+                <button
+                  onClick={handleRequestDelete}
+                  disabled={deleteReqLoad}
+                  style={{ background: "#ef4444", color: "white", border: "none", borderRadius: 12, padding: "11px 28px", fontWeight: 700, fontSize: 14, cursor: "pointer", opacity: deleteReqLoad ? 0.6 : 1 }}
+                >
+                  {deleteReqLoad ? "جاري الإرسال..." : "إرسال طلب الحذف"}
+                </button>
+              </>
+            )}
+          </div>
+          </>
         )}
       </div>
     </div>
