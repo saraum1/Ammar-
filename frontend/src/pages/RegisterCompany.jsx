@@ -112,7 +112,7 @@ export default function RegisterCompany() {
       const data = await response.json();
 
       if (!response.ok) {
-        setErrors({ general: data.message || data.error || data.details || "فشل التسجيل" });
+        setErrors({ general: data.details || data.message || data.error || "فشل التسجيل" });
         return;
       }
 
