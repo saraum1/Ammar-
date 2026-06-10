@@ -46,9 +46,6 @@ export default function RegisterCompany() {
       newErrors.general = "جميع الحقول المطلوبة يجب تعبئتها";
     }
 
-    if (!crFile) {
-      newErrors.crFile = "يجب رفع ملف السجل التجاري (PDF) قبل إرسال الطلب";
-    }
 
     if (form.username && form.username.length < 3) {
       newErrors.username = "Username must be at least 3 characters";
@@ -317,7 +314,7 @@ export default function RegisterCompany() {
 
           <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-2 text-gray-700">
-              إرفاق السجل التجاري (PDF) <span className="text-red-500">*</span>
+              إرفاق السجل التجاري (PDF) <span className="text-gray-400 font-normal">(اختياري)</span>
             </label>
             <div
               className={`relative border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors ${
