@@ -10,6 +10,7 @@ const dbInitPromise = sequelize.sync({ force: false })
       `ALTER TABLE "Products" ALTER COLUMN "imageUrl" TYPE TEXT`,
       `ALTER TABLE "Companies" ADD COLUMN IF NOT EXISTS "deleteRequested" BOOLEAN DEFAULT false`,
       `ALTER TABLE "Companies" ADD COLUMN IF NOT EXISTS "deleteRequestNote" VARCHAR(255)`,
+      `ALTER TABLE "Companies" ALTER COLUMN "commercialRegistrationFile" TYPE TEXT`,
     ];
     for (const sql of migrations) {
       try { await sequelize.query(sql); } catch (_) {}

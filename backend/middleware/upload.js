@@ -18,15 +18,12 @@ ensureDir(path.join(BASE_DIR, "notes"));
 ensureDir(path.join(BASE_DIR, "portfolio"));
 ensureDir(path.join(BASE_DIR, "products"));
 
-const pdfStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(BASE_DIR, "documents")),
-  filename:    (req, file, cb) => cb(null, `cr_${Date.now()}${path.extname(file.originalname)}`)
-});
+// PDF stored in memory so we can convert to base64 and save in DB (Vercel has no persistent disk)
 const pdfFilter = (req, file, cb) => {
   if (file.mimetype === "application/pdf") cb(null, true);
   else cb(new Error("فقط ملفات PDF مسموح بها"), false);
 };
-exports.uploadPDF = multer({ storage: pdfStorage, fileFilter: pdfFilter, limits: { fileSize: 5 * 1024 * 1024 } });
+exports.uploadPDF = multer({ storage: multer.memoryStorage(), fileFilter: pdfFilter, limits: { fileSize: 5 * 1024 * 1024 } });
 
 const imgFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image/")) cb(null, true);

@@ -102,23 +102,14 @@ exports.login = async (req, res) => {
 };
 exports.uploadRegistrationDoc = async (req, res) => {
   try {
-    console.log("[upload-cr-doc] user:", req.user?.id, "| file:", req.file?.filename);
-    if (!req.file) {
-      console.log("[upload-cr-doc] ❌ لم يصل أي ملف");
-      return res.status(400).json({ message: "لم يتم رفع أي ملف" });
-    }
+    if (!req.file) return res.status(400).json({ message: "لم يتم رفع أي ملف" });
     const Company = require("../models/company");
     const company = await Company.findOne({ where: { user_id: req.user.id } });
-    if (!company) {
-      console.log("[upload-cr-doc] ❌ لم يتم العثور على الشركة للمستخدم:", req.user.id);
-      return res.status(404).json({ message: "لم يتم العثور على بيانات الشركة" });
-    }
-    company.commercialRegistrationFile = `/uploads/documents/${req.file.filename}`;
+    if (!company) return res.status(404).json({ message: "لم يتم العثور على بيانات الشركة" });
+    company.commercialRegistrationFile = `data:application/pdf;base64,${req.file.buffer.toString("base64")}`;
     await company.save();
-    console.log("[upload-cr-doc] ✅ تم الحفظ:", company.commercialRegistrationFile);
     res.json({ status: "success", message: "تم رفع الملف بنجاح" });
   } catch (err) {
-    console.error("[upload-cr-doc] ❌ خطأ:", err.message);
     res.status(500).json({ error: err.message });
   }
 };
@@ -133,9 +124,8 @@ exports.uploadDocByCredentials = async (req, res) => {
     if (!valid) return res.status(401).json({ message: "كلمة المرور غير صحيحة" });
     const company = await Company.findOne({ where: { user_id: user.id } });
     if (!company) return res.status(404).json({ message: "بيانات الشركة غير موجودة" });
-    company.commercialRegistrationFile = `/uploads/documents/${req.file.filename}`;
+    company.commercialRegistrationFile = `data:application/pdf;base64,${req.file.buffer.toString("base64")}`;
     await company.save();
-    console.log("[upload-doc-credentials] ✅ تم الحفظ للشركة:", user.username);
     res.json({ status: "success", message: "تم رفع ملف السجل التجاري بنجاح ✓" });
   } catch (err) {
     console.error("[upload-doc-credentials] ❌", err.message);

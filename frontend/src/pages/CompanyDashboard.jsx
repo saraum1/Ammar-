@@ -974,14 +974,23 @@ export default function CompanyDashboard() {
                 <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 8, textAlign: "right" }}>ملف السجل التجاري (PDF)</label>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                   {profile?.commercialRegistrationFile ? (
-                    <a
-                      href={`${profile.commercialRegistrationFile}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#F0E4D0", color: "#C4956A", fontSize: 13, fontWeight: 700, padding: "8px 16px", borderRadius: 10, textDecoration: "none" }}
+                    <button
+                      onClick={() => {
+                        const data = profile.commercialRegistrationFile;
+                        if (data.startsWith("data:")) {
+                          const byteStr = atob(data.split(",")[1]);
+                          const arr = new Uint8Array(byteStr.length);
+                          for (let i = 0; i < byteStr.length; i++) arr[i] = byteStr.charCodeAt(i);
+                          const blob = new Blob([arr], { type: "application/pdf" });
+                          window.open(URL.createObjectURL(blob), "_blank");
+                        } else {
+                          window.open(data, "_blank");
+                        }
+                      }}
+                      style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#F0E4D0", color: "#C4956A", fontSize: 13, fontWeight: 700, padding: "8px 16px", borderRadius: 10, border: "none", cursor: "pointer" }}
                     >
                       📄 عرض الملف الحالي
-                    </a>
+                    </button>
                   ) : (
                     <span style={{ fontSize: 13, color: "#9ca3af", background: "#f9fafb", padding: "8px 14px", borderRadius: 10 }}>
                       ⚠️ لم يُرفع ملف بعد

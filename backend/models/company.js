@@ -30,7 +30,7 @@ const Company = sequelize.define("Company", {
     validate: { isNumeric: true }
   },
   commercialRegistrationFile: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true
   },
   coverPhoto: {

@@ -183,14 +183,12 @@ function CompanyCard({ company, tab, onApprove, onReject, onDelete, onRejectDele
         <InfoRow icon={<Clock size={14} />} label={`تاريخ التسجيل: ${new Date(company.createdAt).toLocaleDateString("ar-SA")}`} />
       </div>
       {company.commercialRegistrationFile ? (
-        <a
-          href={`${company.commercialRegistrationFile}`}
-          target="_blank"
-          rel="noreferrer"
-          style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#fff1e8", color: "#C4956A", fontSize: 13, fontWeight: 700, padding: "7px 16px", borderRadius: 10, marginBottom: 14, textDecoration: "none" }}
+        <button
+          onClick={() => openPDF(company.commercialRegistrationFile)}
+          style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#fff1e8", color: "#C4956A", fontSize: 13, fontWeight: 700, padding: "7px 16px", borderRadius: 10, marginBottom: 14, border: "none", cursor: "pointer" }}
         >
           📄 عرض السجل التجاري PDF
-        </a>
+        </button>
       ) : (
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#f9fafb", color: "#9ca3af", fontSize: 13, fontWeight: 600, padding: "7px 14px", borderRadius: 10, marginBottom: 14 }}>
           ⚠️ لم يُرفع ملف السجل التجاري بعد
@@ -273,6 +271,18 @@ function CompanyCard({ company, tab, onApprove, onReject, onDelete, onRejectDele
       ) : null}
     </div>
   );
+}
+function openPDF(data) {
+  if (!data) return;
+  if (data.startsWith("data:")) {
+    const byteStr = atob(data.split(",")[1]);
+    const arr = new Uint8Array(byteStr.length);
+    for (let i = 0; i < byteStr.length; i++) arr[i] = byteStr.charCodeAt(i);
+    const blob = new Blob([arr], { type: "application/pdf" });
+    window.open(URL.createObjectURL(blob), "_blank");
+  } else {
+    window.open(data, "_blank");
+  }
 }
 function InfoRow({ icon, label }) {
   return (
