@@ -6,9 +6,14 @@ const sequelize = require("./config/db");
 // Initialize DB once and cache the promise
 const dbInitPromise = sequelize.sync({ force: false })
   .then(async () => {
-    try {
-      await sequelize.query(`ALTER TABLE "Products" ALTER COLUMN "imageUrl" TYPE TEXT`);
-    } catch (_) {}
+    const migrations = [
+      `ALTER TABLE "Products" ALTER COLUMN "imageUrl" TYPE TEXT`,
+      `ALTER TABLE "Companies" ADD COLUMN IF NOT EXISTS "deleteRequested" BOOLEAN DEFAULT false`,
+      `ALTER TABLE "Companies" ADD COLUMN IF NOT EXISTS "deleteRequestNote" VARCHAR(255)`,
+    ];
+    for (const sql of migrations) {
+      try { await sequelize.query(sql); } catch (_) {}
+    }
     console.log("✅ DB ready");
   })
   .catch(err => {
