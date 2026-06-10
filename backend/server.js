@@ -4,7 +4,7 @@ const app = require("./app");
 const sequelize = require("./config/db");
 
 // Initialize DB once and cache the promise
-const dbInitPromise = sequelize.sync({ force: false })
+const dbInitPromise = sequelize.sync({ alter: true })
   .then(async () => {
     const migrations = [
       `ALTER TABLE "Products" ALTER COLUMN "imageUrl" TYPE TEXT`,
