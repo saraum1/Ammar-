@@ -231,33 +231,8 @@ export default function ClientProfile() {
               </Link>
             </div>
           ) : (
-            <div className="space-y-4">
-              {requests.map(req => {
-                const st = STATUS[req.status] || STATUS.pending;
-                const co = req.Company || {};
-                return (
-                  <div key={req.id} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                    <div className="flex items-start justify-between mb-3">
-                      <span style={{ background: st.bg, color: st.color }} className="text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                        {st.icon} {st.label}
-                      </span>
-                      <div className="text-right">
-                        <p className="font-bold text-gray-900">{req.projectType}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">{new Date(req.createdAt).toLocaleDateString("ar-SA")}</p>
-                      </div>
-                    </div>
-                    <div className="text-sm text-gray-600 space-y-1 text-right">
-                      <p>🏗️ الشركة: <span className="font-semibold text-gray-800">{co.ownerName}</span></p>
-                      <p>📍 الموقع: {req.location}</p>
-                      {req.budget  && <p>💰 الميزانية: {req.budget}</p>}
-                      {req.message && <p className="bg-gray-50 rounded-xl p-3 mt-2">{req.message}</p>}
-                      {req.status === "rejected" && req.companyNote && (
-                        <p className="text-red-500 text-xs mt-2">سبب الرفض: {req.companyNote}</p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="space-y-5">
+              {requests.map(req => <RequestTracker key={req.id} req={req} />)}
             </div>
           )
         )}
@@ -270,5 +245,128 @@ function TabBtn({ active, onClick, icon, label }) {
     <button onClick={onClick} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border-none cursor-pointer transition-all ${active ? "bg-[#1B3A2D] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
       {icon} {label}
     </button>
+  );
+}
+
+function RequestTracker({ req }) {
+  const co = req.Company || {};
+  const isAccepted = req.status === "accepted";
+  const isRejected = req.status === "rejected";
+
+  // الخطوات: 0=إرسال، 1=مراجعة، 2=النتيجة
+  const stepDone  = isAccepted || isRejected ? 2 : 1; // الخطوة الحالية (0-based)
+
+  const steps = [
+    {
+      label: "إرسال الطلب",
+      sublabel: new Date(req.createdAt).toLocaleDateString("ar-SA"),
+      icon: "📤",
+      done: true,
+      active: false,
+    },
+    {
+      label: "قيد المراجعة",
+      sublabel: "الشركة تراجع طلبك",
+      icon: "🔍",
+      done: isAccepted || isRejected,
+      active: !isAccepted && !isRejected,
+    },
+    {
+      label: isAccepted ? "تم القبول" : isRejected ? "تم الرفض" : "النتيجة",
+      sublabel: isAccepted ? "🎉 الشركة وافقت على طلبك" : isRejected ? (req.companyNote || "لم يتم قبول الطلب") : "في انتظار الرد",
+      icon: isAccepted ? "✅" : isRejected ? "❌" : "⏳",
+      done: isAccepted || isRejected,
+      active: false,
+      result: true,
+      accepted: isAccepted,
+      rejected: isRejected,
+    },
+  ];
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      {/* Header */}
+      <div className="px-5 pt-5 pb-4 border-b border-gray-50">
+        <div className="flex items-start justify-between">
+          <span style={{
+            fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 999,
+            background: isAccepted ? "#dcfce7" : isRejected ? "#fee2e2" : "#fef3c7",
+            color:      isAccepted ? "#166534" : isRejected ? "#991b1b" : "#92400e",
+          }}>
+            {isAccepted ? "✅ مقبول" : isRejected ? "❌ مرفوض" : "⏳ معلق"}
+          </span>
+          <div className="text-right">
+            <p className="font-bold text-gray-900 text-sm">{req.projectType}</p>
+            <p className="text-xs text-gray-400 mt-0.5">🏗️ {co.ownerName}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Stepper */}
+      <div className="px-5 py-5">
+        <div className="flex items-start justify-between relative" dir="rtl">
+          {/* خط الوصل */}
+          <div style={{
+            position: "absolute",
+            top: 18,
+            right: "calc(16.5% + 18px)",
+            left: "calc(16.5% + 18px)",
+            height: 3,
+            background: "#f0e8df",
+            borderRadius: 999,
+            zIndex: 0,
+          }} />
+          {/* خط التقدم */}
+          <div style={{
+            position: "absolute",
+            top: 18,
+            right: "calc(16.5% + 18px)",
+            width: stepDone === 0 ? "0%" : stepDone === 1 ? "50%" : "100%",
+            height: 3,
+            background: isRejected ? "#fca5a5" : "linear-gradient(90deg, #A67C52, #C4956A)",
+            borderRadius: 999,
+            zIndex: 1,
+            transition: "width 0.5s ease",
+          }} />
+
+          {steps.map((step, i) => (
+            <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", position: "relative", zIndex: 2 }}>
+              {/* الدائرة */}
+              <div style={{
+                width: 36, height: 36,
+                borderRadius: "50%",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 16,
+                background: step.done
+                  ? (step.result && step.rejected ? "#fee2e2" : step.result && step.accepted ? "#dcfce7" : "#F0E4D0")
+                  : step.active ? "#fff7ed" : "#f9fafb",
+                border: step.done
+                  ? (step.result && step.rejected ? "2.5px solid #f87171" : step.result && step.accepted ? "2.5px solid #4ade80" : "2.5px solid #C4956A")
+                  : step.active ? "2.5px dashed #C4956A" : "2.5px solid #e5e7eb",
+                boxShadow: step.active ? "0 0 0 4px #fff7ed" : "none",
+                transition: "all 0.3s",
+              }}>
+                {step.icon}
+              </div>
+              {/* النص */}
+              <p style={{
+                fontSize: 11, fontWeight: 700, marginTop: 8, textAlign: "center",
+                color: step.done ? (step.result && step.rejected ? "#ef4444" : step.result && step.accepted ? "#16a34a" : "#1B3A2D") : step.active ? "#C4956A" : "#9ca3af",
+              }}>{step.label}</p>
+              <p style={{ fontSize: 10, color: "#9ca3af", marginTop: 2, textAlign: "center", lineHeight: 1.4, maxWidth: 80 }}>
+                {step.sublabel}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* تفاصيل */}
+      <div className="px-5 pb-5 space-y-1 text-right text-sm text-gray-500 border-t border-gray-50 pt-3">
+        <p>📍 الموقع: <span className="text-gray-700 font-medium">{req.location}</span></p>
+        {req.budget  && <p>💰 الميزانية: <span className="text-gray-700 font-medium">{req.budget}</span></p>}
+        {req.message && <p className="bg-gray-50 rounded-xl p-3 text-xs text-gray-600 mt-2">{req.message}</p>}
+      </div>
+    </div>
   );
 }
