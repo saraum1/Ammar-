@@ -11,6 +11,10 @@ const dbInitPromise = sequelize.sync({ force: false })
       `ALTER TABLE "Companies" ADD COLUMN IF NOT EXISTS "deleteRequested" BOOLEAN DEFAULT false`,
       `ALTER TABLE "Companies" ADD COLUMN IF NOT EXISTS "deleteRequestNote" VARCHAR(255)`,
       `ALTER TABLE "Companies" ALTER COLUMN "commercialRegistrationFile" TYPE TEXT`,
+      `ALTER TABLE "Companies" ADD COLUMN IF NOT EXISTS "categories" JSON DEFAULT '[]'`,
+      `ALTER TABLE "Companies" ADD COLUMN IF NOT EXISTS "approvalNote" VARCHAR(255)`,
+      `ALTER TABLE "Companies" ADD COLUMN IF NOT EXISTS "coverPhoto" VARCHAR(255)`,
+      `ALTER TABLE "Companies" ADD COLUMN IF NOT EXISTS "city" VARCHAR(255) DEFAULT 'الرياض'`,
     ];
     for (const sql of migrations) {
       try { await sequelize.query(sql); } catch (_) {}
