@@ -41,10 +41,18 @@ exports.register = async (req, res) => {
       password: hashedPassword, phone, role
     });
     if (role === "company") {
-      await Company.create({
-        user_id: user.id, ownerName, type,
-        commercialRegistrationNumber, vatNumber, establishmentNumber
-      });
+      try {
+        await Company.create({
+          user_id: user.id, ownerName, type,
+          commercialRegistrationNumber: commercialRegistrationNumber || null,
+          vatNumber: vatNumber || null,
+          establishmentNumber: establishmentNumber || null
+        });
+      } catch (companyErr) {
+        // لو فشل إنشاء الشركة نمسح الـ User حتى لا يتعلق الإيميل
+        await user.destroy().catch(() => {});
+        return res.status(500).json({ error: "فشل إنشاء الشركة، يرجى المحاولة مرة أخرى", details: companyErr.message });
+      }
     }
     const token = jwt.sign(
       { id: user.id, role: user.role },
