@@ -190,33 +190,38 @@ export default function ClientProfile() {
               </button>
             </div>
             {/* حذف الحساب */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-red-100">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-red-500">
-                  <Trash2 size={20}/>
-                </div>
-                <h2 className="text-lg font-bold text-red-600">حذف الحساب</h2>
-              </div>
-              <p className="text-sm text-gray-500 mb-4 text-right">سيتم حذف حسابك وجميع بياناتك نهائياً ولا يمكن التراجع عن هذه العملية.</p>
-              {deleteErr && <p className="text-red-500 text-sm mb-3">{deleteErr}</p>}
-              {!deleteConfirm ? (
-                <button onClick={() => setDeleteConfirm(true)} className="w-full border-2 border-red-200 text-red-500 py-3 rounded-xl font-bold hover:bg-red-50 transition-colors">
-                  حذف حسابي
-                </button>
-              ) : (
-                <div>
-                  <p className="text-center text-sm font-bold text-red-600 mb-3">هل أنت متأكد؟ هذا الإجراء لا يمكن التراجع عنه</p>
-                  <div className="flex gap-3">
-                    <button onClick={() => setDeleteConfirm(false)} className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">
+            {deleteErr && <p className="text-red-500 text-sm text-center">{deleteErr}</p>}
+            <button onClick={() => setDeleteConfirm(true)} className="w-full border border-red-200 text-red-400 py-2.5 rounded-xl text-sm font-semibold hover:bg-red-50 transition-colors">
+              حذف الحساب
+            </button>
+
+            {/* Modal تأكيد الحذف */}
+            {deleteConfirm && (
+              <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20 }}>
+                <div style={{ background: "white", borderRadius: 20, padding: 28, maxWidth: 360, width: "100%", textAlign: "center" }} dir="rtl">
+                  <div style={{ fontSize: 40, marginBottom: 12 }}>⚠️</div>
+                  <h3 style={{ fontSize: 17, fontWeight: 800, color: "#111827", marginBottom: 10 }}>حذف الحساب</h3>
+                  <p style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.7, marginBottom: 22 }}>
+                    سيتم حذف حسابك وجميع بياناتك نهائياً ولا يمكن التراجع عن هذه العملية.
+                  </p>
+                  <div style={{ display: "flex", gap: 10 }}>
+                    <button
+                      onClick={() => setDeleteConfirm(false)}
+                      style={{ flex: 1, background: "#f3f4f6", color: "#374151", border: "none", borderRadius: 12, padding: "11px 0", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}
+                    >
                       إلغاء
                     </button>
-                    <button onClick={handleDeleteAccount} disabled={deleting} className="flex-1 bg-red-500 text-white py-3 rounded-xl font-bold hover:bg-red-600 disabled:opacity-50 transition-colors">
-                      {deleting ? "جاري الحذف..." : "نعم، احذف حسابي"}
+                    <button
+                      onClick={handleDeleteAccount}
+                      disabled={deleting}
+                      style={{ flex: 1, background: "#ef4444", color: "white", border: "none", borderRadius: 12, padding: "11px 0", fontWeight: 700, fontSize: 14, cursor: "pointer", opacity: deleting ? 0.6 : 1, fontFamily: "inherit" }}
+                    >
+                      {deleting ? "جاري الحذف..." : "تأكيد"}
                     </button>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
         {tab === "requests" && (
