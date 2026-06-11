@@ -1110,7 +1110,7 @@ export default function CompanyDashboard() {
             ) : (
               <>
                 <p style={{ fontSize: 13, color: "#6b7280", marginBottom: 14, textAlign: "right", lineHeight: 1.7 }}>
-                  لا يمكن حذف حساب الشركة مباشرة لحماية بيانات العملاء. يمكنك إرسال طلب حذف وسيراجعه الإدارة.
+                  لا يمكن حذف حساب الشركة مباشرة لحماية بيانات العملاء. يمكنك إرسال طلب حذف وستراجعه الإدارة.
                 </p>
                 {deleteReqErr && <div style={{ background: "#fee2e2", color: "#991b1b", borderRadius: 10, padding: "10px 14px", fontSize: 13, marginBottom: 12, textAlign: "right" }}>⚠️ {deleteReqErr}</div>}
                 <div style={{ marginBottom: 14 }}>
