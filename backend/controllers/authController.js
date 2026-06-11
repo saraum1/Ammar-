@@ -256,7 +256,7 @@ exports.googleAuth = async (req, res) => {
       }
       user = await User.create({
         firstName: firstName || name?.split(" ")[0] || "مستخدم",
-        lastName:  lastName  || name?.split(" ")[1] || "جوجل",
+        lastName:  lastName  || name?.split(" ")[1] || "",
         username,
         email,
         password: null,
@@ -283,6 +283,7 @@ exports.googleAuth = async (req, res) => {
         name:     `${user.firstName} ${user.lastName}`,
         email:    user.email,
         username: user.username,
+        phone:    user.phone,
         role:     user.role,
         avatar:   user.avatar,
       }
