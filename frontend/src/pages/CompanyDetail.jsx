@@ -14,7 +14,7 @@ const TYPE_LABEL = {
 const COVERS = {
   full_construction:    "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80",
   partial_construction: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1200&q=80",
-  materials_supplier:   "https://images.unsplash.com/photo-1590496793929-36417d3117de?w=1200&q=80",
+  materials_supplier:   "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80",
 };
 const FALLBACK  = "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80";
 const PROJ_TYPES = ["فيلا", "شقة", "عمارة", "مجمع سكني", "مبنى تجاري"];
@@ -196,15 +196,8 @@ export default function CompanyDetail() {
             <ChevronRight size={13} />
             <span style={{ color: "#374151" }}>{company.ownerName}</span>
           </div>
-          {cartCount > 0 && token && user?.role === "client" && (
-            <button
-              onClick={() => setShowOrder(true)}
-              style={{ display: "flex", alignItems: "center", gap: 8, background: "#C4956A", color: "white", border: "none", borderRadius: 12, padding: "9px 20px", fontWeight: 700, fontSize: 13, cursor: "pointer", boxShadow: "0 3px 12px rgba(196,149,106,0.4)" }}
-            >
-              <ShoppingCart size={16} />
-              السلة ({cartCount}) — {cartTotal.toLocaleString()} ر.س
-            </button>
-          )}
+          {/* placeholder للـ breadcrumb row */}
+          <span />
         </div>
         {}
         <div style={{ position: "relative", height: 200, overflow: "hidden" }}>
@@ -303,6 +296,37 @@ export default function CompanyDetail() {
           </div>
         </div>
         <OrderModal show={showOrder} onClose={() => setShowOrder(false)} products={products} cart={cart} cartTotal={cartTotal} orderAddr={orderAddr} setOrderAddr={setOrderAddr} orderNote={orderNote} setOrderNote={setOrderNote} handleOrder={handleOrder} ordering={ordering} orderDone={orderDone} orderErr={orderErr} />
+
+        {/* دائرة السلة العائمة */}
+        {cartCount > 0 && token && user?.role === "client" && (
+          <button
+            onClick={() => setShowOrder(true)}
+            style={{
+              position: "fixed", bottom: 28, left: 28,
+              width: 64, height: 64, borderRadius: "50%",
+              background: "linear-gradient(135deg,#A67C52,#C4956A)",
+              color: "white", border: "none", cursor: "pointer",
+              boxShadow: "0 6px 24px rgba(196,149,106,0.55)",
+              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+              zIndex: 999, transition: "transform 0.2s",
+            }}
+            onMouseEnter={e => e.currentTarget.style.transform = "scale(1.1)"}
+            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+          >
+            <ShoppingCart size={22} />
+            <span style={{ fontSize: 11, fontWeight: 800, marginTop: 2 }}>{cartCount}</span>
+            {/* badge السعر */}
+            <span style={{
+              position: "absolute", top: -6, right: -6,
+              background: "#1B3A2D", color: "white",
+              fontSize: 10, fontWeight: 800,
+              padding: "2px 6px", borderRadius: 999,
+              whiteSpace: "nowrap",
+            }}>
+              {cartTotal.toLocaleString()} ر.س
+            </span>
+          </button>
+        )}
       </div>
     );
   }
