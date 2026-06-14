@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { HardHat, MapPin, ChevronLeft, CheckCircle2, Clock, Building2, TrendingUp } from "lucide-react";
+import { MapPin, CheckCircle2, Clock, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 function calcProgress(phases) {
@@ -33,16 +33,11 @@ export default function MyProjects() {
   return (
     <div style={{ background: "#FAF7F0", minHeight: "100vh", direction: "rtl" }}>
       {}
-      <div style={{ background: "white", borderBottom: "1px solid #f0e8df", padding: "36px 40px 28px" }}>
+      <div style={{ background: "white", padding: "36px 40px 28px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 6 }}>
-            <div style={{ width: 48, height: 48, background: "linear-gradient(135deg,#A67C52,#C4956A)", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", color: "white", boxShadow: "0 6px 16px rgba(196,149,106,0.3)" }}>
-              <HardHat size={22} />
-            </div>
-            <div>
-              <h1 style={{ fontSize: 26, fontWeight: 900, margin: 0, color: "#111827" }}>مشاريعي</h1>
-              <p style={{ color: "#9ca3af", fontSize: 13, margin: "2px 0 0", fontWeight: 500 }}>تابع تقدم مشاريعك مع الشركات</p>
-            </div>
+          <div style={{ marginBottom: 6 }}>
+            <h1 style={{ fontSize: 32, fontWeight: 900, margin: "0 0 4px", color: "#111827", letterSpacing: -0.5 }}>مشاريعي</h1>
+            <p style={{ color: "#9ca3af", fontSize: 14, margin: 0 }}>تابع تقدم مشاريعك مع الشركات</p>
           </div>
           {!loading && projects.length > 0 && (
             <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
@@ -73,9 +68,9 @@ export default function MyProjects() {
 }
 function StatChip({ label, value, color, bg }) {
   return (
-    <div style={{ background: bg, borderRadius: 10, padding: "6px 16px", display: "flex", alignItems: "center", gap: 8 }}>
-      <span style={{ fontSize: 18, fontWeight: 900, color }}>{value}</span>
-      <span style={{ fontSize: 12, fontWeight: 600, color, opacity: 0.8 }}>{label}</span>
+    <div style={{ borderRadius: 8, padding: "5px 16px", display: "flex", alignItems: "center", gap: 8, border: "1px solid #EDE3D8", background: "white" }}>
+      <span style={{ fontSize: 17, fontWeight: 900, color }}>{value}</span>
+      <span style={{ fontSize: 12, fontWeight: 600, color: "#6b7280" }}>{label}</span>
     </div>
   );
 }
@@ -91,28 +86,25 @@ function ProjectCard({ project, onClick }) {
       onClick={onClick}
       style={{
         background: "white",
-        borderRadius: 22,
+        borderRadius: 12,
         padding: "22px 26px",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
         cursor: "pointer",
-        transition: "transform 0.2s, box-shadow 0.2s",
-        border: "1px solid rgba(0,0,0,0.04)",
+        transition: "border-color 0.2s",
+        border: "1px solid #EDE3D8",
         display: "flex",
         flexDirection: "column",
         gap: 16,
       }}
-      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.1)"; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)"; }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = "#C4956A"; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = "#EDE3D8"; }}
     >
       {}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
         <div style={{ textAlign: "right" }}>
           <h3 style={{ fontSize: 19, fontWeight: 900, margin: 0, color: "#111827" }}>{project.type}</h3>
           {company && (
-            <div style={{ display: "flex", alignItems: "center", gap: 5, justifyContent: "flex-start", marginTop: 4 }}>
-              <div style={{ width: 28, height: 28, background: "#F0E4D0", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Building2 size={13} color="#C4956A" />
-              </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 4, justifyContent: "flex-start", marginTop: 4 }}>
               <span style={{ color: "#C4956A", fontSize: 13, fontWeight: 700 }}>{company.ownerName}</span>
             </div>
           )}
@@ -174,40 +166,33 @@ function ProjectCard({ project, onClick }) {
 }
 function EmptyState({ onSearch }) {
   return (
-    <div style={{ textAlign: "center", padding: "70px 20px" }}>
-      <div style={{ width: 80, height: 80, background: "#F0E4D0", borderRadius: 24, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", boxShadow: "0 8px 24px rgba(196,149,106,0.15)" }}>
-        <HardHat size={36} color="#C4956A" />
-      </div>
-      <h2 style={{ fontSize: 22, fontWeight: 900, margin: "0 0 8px", color: "#111827" }}>لا توجد مشاريع بعد</h2>
-      <p style={{ color: "#9ca3af", fontSize: 14, margin: "0 0 28px", lineHeight: 1.8 }}>
-        ابحث عن شركة هندسية وأرسل طلبك<br />وستظهر مشاريعك هنا تلقائياً
+    <div style={{ textAlign: "center", padding: "80px 20px" }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, margin: "0 0 10px", color: "#111827" }}>لا توجد مشاريع بعد</h2>
+      <p style={{ color: "#9ca3af", fontSize: 14, margin: "0 0 32px", lineHeight: 1.8 }}>
+        أرسل طلبك لأي شركة وستظهر مشاريعك هنا
       </p>
       <button
         onClick={onSearch}
         style={{
-          background: "linear-gradient(135deg,#A67C52,#C4956A)",
+          background: "#1B3A2D",
           color: "white",
           border: "none",
-          borderRadius: 14,
-          padding: "13px 32px",
-          fontWeight: 800,
-          fontSize: 15,
+          borderRadius: 8,
+          padding: "12px 28px",
+          fontWeight: 700,
+          fontSize: 14,
           cursor: "pointer",
-          boxShadow: "0 8px 24px rgba(196,149,106,0.35)",
           fontFamily: "inherit",
-          transition: "transform 0.18s",
         }}
-        onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-        onMouseLeave={e => e.currentTarget.style.transform = ""}
       >
-        ابحث عن شركة ←
+        ابحث عن شركة
       </button>
     </div>
   );
 }
 function SkeletonCard() {
   return (
-    <div style={{ background: "white", borderRadius: 22, padding: "22px 26px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)", border: "1px solid rgba(0,0,0,0.04)" }}>
+    <div style={{ background: "white", borderRadius: 12, padding: "22px 26px", border: "1px solid #EDE3D8" }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14 }}>
         <div style={{ width: 60, height: 22, background: "#f3f4f6", borderRadius: 8 }} />
         <div style={{ width: 120, height: 22, background: "#f3f4f6", borderRadius: 8 }} />

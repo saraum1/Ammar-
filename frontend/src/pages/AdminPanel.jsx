@@ -104,9 +104,8 @@ export default function AdminPanel() {
           <p style={{ textAlign: "center", color: "#9ca3af", padding: 60 }}>جاري التحميل...</p>
         ) : companies.length === 0 ? (
           <div style={{ textAlign: "center", padding: 60, color: "#9ca3af" }}>
-            <CheckCircle size={48} style={{ margin: "0 auto 16px", opacity: 0.3 }} />
             <p>
-              {tab === "pending"  ? "لا توجد شركات معلقة 🎉" :
+              {tab === "pending"  ? "لا توجد شركات معلقة" :
                tab === "delreqs" ? "لا توجد طلبات حذف حالياً" :
                "لا توجد شركات مسجّلة"}
             </p>
@@ -141,9 +140,10 @@ function TabBtn({ active, onClick, label, danger }) {
     <button
       onClick={onClick}
       style={{
-        padding: "8px 18px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 14, fontWeight: 700,
-        background: active ? (danger ? "#ef4444" : "#C4956A") : "#f3f4f6",
+        padding: "7px 16px", borderRadius: 8, border: "1px solid", cursor: "pointer", fontSize: 13, fontWeight: 700,
+        background: active ? (danger ? "#ef4444" : "#1B3A2D") : "white",
         color:      active ? "white" : (danger ? "#ef4444" : "#374151"),
+        borderColor: active ? (danger ? "#ef4444" : "#1B3A2D") : "#e5e7eb",
         transition: "all 0.15s"
       }}
     >
@@ -154,7 +154,7 @@ function TabBtn({ active, onClick, label, danger }) {
 function CompanyCard({ company, tab, onApprove, onReject, onDelete, onRejectDelete, isRejectOpen, note, setNote, confirmReject, cancelReject, statusBadge }) {
   const u = company.User || {};
   return (
-    <div style={{ background: "white", borderRadius: 20, padding: "26px 30px", boxShadow: "0 4px 16px rgba(0,0,0,0.06)", border: company.deleteRequested ? "2px solid #fecaca" : "none" }}>
+    <div style={{ background: "white", borderRadius: 12, padding: "26px 30px", border: company.deleteRequested ? "1.5px solid #fecaca" : "1px solid #EDE3D8" }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 18 }}>
         <div style={{ textAlign: "right" }}>
           <h3 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>{company.ownerName}</h3>
@@ -187,11 +187,11 @@ function CompanyCard({ company, tab, onApprove, onReject, onDelete, onRejectDele
           onClick={() => openPDF(company.commercialRegistrationFile)}
           style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#fff1e8", color: "#C4956A", fontSize: 13, fontWeight: 700, padding: "7px 16px", borderRadius: 10, marginBottom: 14, border: "none", cursor: "pointer" }}
         >
-          📄 عرض السجل التجاري PDF
+          عرض السجل التجاري PDF
         </button>
       ) : (
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#f9fafb", color: "#9ca3af", fontSize: 13, fontWeight: 600, padding: "7px 14px", borderRadius: 10, marginBottom: 14 }}>
-          ⚠️ لم يُرفع ملف السجل التجاري بعد
+          لم يُرفع ملف السجل التجاري بعد
         </span>
       )}
       {company.approvalStatus === "rejected" && company.approvalNote && (
@@ -202,7 +202,7 @@ function CompanyCard({ company, tab, onApprove, onReject, onDelete, onRejectDele
       {/* Delete request note */}
       {company.deleteRequested && company.deleteRequestNote && (
         <p style={{ color: "#92400e", fontSize: 13, background: "#fef3c7", padding: "8px 14px", borderRadius: 10, marginBottom: 14 }}>
-          📝 سبب طلب الحذف: {company.deleteRequestNote}
+          سبب طلب الحذف: {company.deleteRequestNote}
         </p>
       )}
 
@@ -237,15 +237,15 @@ function CompanyCard({ company, tab, onApprove, onReject, onDelete, onRejectDele
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
               <button
                 onClick={onReject}
-                style={{ display: "flex", alignItems: "center", gap: 6, background: "#fee2e2", color: "#991b1b", border: "none", borderRadius: 10, padding: "9px 20px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
+                style={{ background: "white", color: "#991b1b", border: "1px solid #fecaca", borderRadius: 8, padding: "8px 20px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
               >
-                رفض <XCircle size={16} />
+                رفض
               </button>
               <button
                 onClick={onApprove}
-                style={{ display: "flex", alignItems: "center", gap: 6, background: "#dcfce7", color: "#166534", border: "none", borderRadius: 10, padding: "9px 20px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
+                style={{ background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "8px 20px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
               >
-                موافقة <CheckCircle size={16} />
+                موافقة
               </button>
             </div>
           ) : (

@@ -37,7 +37,7 @@ export default function ClientProfile() {
     return (
       <div className="min-h-screen bg-[#FAF7F0] flex items-center justify-center" dir="rtl">
         <div className="bg-white rounded-2xl p-10 text-center shadow-lg max-w-sm w-full">
-          <div className="text-5xl mb-4">🔒</div>
+          <div className="text-5xl mb-4"></div>
           <h2 className="text-xl font-black mb-3">سجّل دخولك أول</h2>
           <Link to="/login" className="block bg-[#1B3A2D] text-white py-3 rounded-xl font-bold hover:opacity-90 mt-4">
             تسجيل الدخول
@@ -122,7 +122,7 @@ export default function ClientProfile() {
   };
   return (
     <div className="min-h-screen bg-[#FAF7F0]" dir="rtl">
-      <div className="bg-white border-b border-gray-100 px-8 py-6">
+      <div className="bg-white px-8 py-6">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-black">حسابي</h1>
@@ -130,22 +130,19 @@ export default function ClientProfile() {
           </div>
           <div className="flex gap-2">
             <TabBtn active={tab === "profile"}  onClick={() => switchTab("profile")}  icon={<User size={15}/>}  label="البروفايل" />
-            <TabBtn active={tab === "requests"} onClick={() => switchTab("requests")} icon={<Send size={15}/>}  label="طلباتي" />
+            <TabBtn active={tab === "requests"} onClick={() => switchTab("requests")} icon={null}               label="طلباتي" />
           </div>
         </div>
       </div>
       <div className="max-w-2xl mx-auto px-8 py-8">
         {tab === "profile" && (
           <div className="space-y-5">
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-[#F0E4D0] rounded-xl flex items-center justify-center text-[#C4956A]">
-                  <User size={20}/>
-                </div>
+            <div className="bg-white rounded-xl p-6 border border-gray-200">
+              <div className="mb-5 pb-4 border-b border-gray-100">
                 <h2 className="text-lg font-bold">المعلومات الشخصية</h2>
               </div>
               {profErr && <p className="text-red-500 text-sm mb-4">{profErr}</p>}
-              {saved   && <p className="text-green-600 text-sm mb-4">✓ تم حفظ التغييرات</p>}
+              {saved   && <p className="text-green-600 text-sm mb-4">تم حفظ التغييرات</p>}
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">الاسم الأول</label>
@@ -168,15 +165,12 @@ export default function ClientProfile() {
                 {saving ? "جاري الحفظ..." : "حفظ التغييرات"}
               </button>
             </div>
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-[#F0E4D0] rounded-xl flex items-center justify-center text-[#C4956A]">
-                  <Lock size={20}/>
-                </div>
+            <div className="bg-white rounded-xl p-6 border border-gray-200">
+              <div className="mb-5 pb-4 border-b border-gray-100">
                 <h2 className="text-lg font-bold">تغيير كلمة المرور</h2>
               </div>
               {pwErr && <p className="text-red-500 text-sm mb-4">{pwErr}</p>}
-              {pwOk  && <p className="text-green-600 text-sm mb-4">✓ تم تغيير كلمة المرور بنجاح</p>}
+              {pwOk  && <p className="text-green-600 text-sm mb-4">تم تغيير كلمة المرور بنجاح</p>}
               {["currentPassword","newPassword","confirmPassword"].map((key, i) => (
                 <div key={key} className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -199,7 +193,7 @@ export default function ClientProfile() {
             {deleteConfirm && (
               <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20 }}>
                 <div style={{ background: "white", borderRadius: 20, padding: 28, maxWidth: 360, width: "100%", textAlign: "center" }} dir="rtl">
-                  <div style={{ fontSize: 40, marginBottom: 12 }}>⚠️</div>
+                  <div style={{ fontSize: 40, marginBottom: 12 }}></div>
                   <h3 style={{ fontSize: 17, fontWeight: 800, color: "#111827", marginBottom: 10 }}>حذف الحساب</h3>
                   <p style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.7, marginBottom: 22 }}>
                     سيتم حذف حسابك وجميع بياناتك نهائياً ولا يمكن التراجع عن هذه العملية.
@@ -229,7 +223,6 @@ export default function ClientProfile() {
             <p className="text-center text-gray-400 py-16">جاري التحميل...</p>
           ) : requests.length === 0 ? (
             <div className="text-center py-16 text-gray-400">
-              <Send size={44} className="mx-auto mb-4 opacity-30"/>
               <p>لم ترسل أي طلبات بعد</p>
               <Link to="/engineering" className="text-[#C4956A] font-bold mt-3 block hover:underline">
                 تصفح الشركات الهندسية
@@ -265,21 +258,21 @@ function RequestTracker({ req }) {
     {
       label: "إرسال الطلب",
       sublabel: new Date(req.createdAt).toLocaleDateString("ar-SA"),
-      icon: "📤",
+      icon: null,
       done: true,
       active: false,
     },
     {
       label: "قيد المراجعة",
       sublabel: "الشركة تراجع طلبك",
-      icon: "🔍",
+      icon: null,
       done: isAccepted || isRejected,
       active: !isAccepted && !isRejected,
     },
     {
       label: isAccepted ? "تم القبول" : isRejected ? "تم الرفض" : "النتيجة",
-      sublabel: isAccepted ? "🎉 الشركة وافقت على طلبك" : isRejected ? (req.companyNote || "لم يتم قبول الطلب") : "في انتظار الرد",
-      icon: isAccepted ? "✅" : isRejected ? "❌" : "⏳",
+      sublabel: isAccepted ? "الشركة وافقت على طلبك" : isRejected ? (req.companyNote || "لم يتم قبول الطلب") : "في انتظار الرد",
+      icon: null,
       done: isAccepted || isRejected,
       active: false,
       result: true,
@@ -298,11 +291,11 @@ function RequestTracker({ req }) {
             background: isAccepted ? "#dcfce7" : isRejected ? "#fee2e2" : "#fef3c7",
             color:      isAccepted ? "#166534" : isRejected ? "#991b1b" : "#92400e",
           }}>
-            {isAccepted ? "✅ مقبول" : isRejected ? "❌ مرفوض" : "⏳ معلق"}
+            {isAccepted ? "مقبول" : isRejected ? "مرفوض" : "معلق"}
           </span>
-          <div className="text-right">
+          <div className="text-right" style={{ order: -1 }}>
             <p className="font-bold text-gray-900 text-sm">{req.projectType}</p>
-            <p className="text-xs text-gray-400 mt-0.5">🏗️ {co.ownerName}</p>
+            <p className="text-xs text-gray-400 mt-0.5">{co.ownerName}</p>
           </div>
         </div>
       </div>
@@ -368,8 +361,8 @@ function RequestTracker({ req }) {
 
       {/* تفاصيل */}
       <div className="px-5 pb-5 space-y-1 text-right text-sm text-gray-500 border-t border-gray-50 pt-3">
-        <p>📍 الموقع: <span className="text-gray-700 font-medium">{req.location}</span></p>
-        {req.budget  && <p>💰 الميزانية: <span className="text-gray-700 font-medium">{req.budget}</span></p>}
+        <p>الموقع: <span className="text-gray-700 font-medium">{req.location}</span></p>
+        {req.budget  && <p>الميزانية: <span className="text-gray-700 font-medium">{req.budget}</span></p>}
         {req.message && <p className="bg-gray-50 rounded-xl p-3 text-xs text-gray-600 mt-2">{req.message}</p>}
       </div>
     </div>

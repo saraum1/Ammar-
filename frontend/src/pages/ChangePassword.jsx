@@ -81,7 +81,7 @@ export default function ChangePassword() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#C4956A] text-white py-3 rounded-xl font-bold hover:opacity-90 shadow-md disabled:opacity-60"
+            className="w-full bg-[#1B3A2D] text-white py-3 rounded-lg font-bold hover:opacity-90 disabled:opacity-60"
           >
             {loading ? "جاري الحفظ..." : "حفظ التغييرات"}
           </button>

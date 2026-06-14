@@ -26,16 +26,11 @@ export default function Favorites() {
   return (
     <div style={{ background: "#FAF7F0", minHeight: "100vh", direction: "rtl" }}>
       {}
-      <div style={{ background: "white", borderBottom: "1px solid #f0e8df", padding: "36px 48px 28px" }}>
+      <div style={{ background: "white", padding: "36px 48px 28px" }}>
         <div style={{ maxWidth: 1060, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div style={{ width: 48, height: 48, background: "linear-gradient(135deg,#A67C52,#C4956A)", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(196,149,106,0.3)" }}>
-              <Heart size={22} color="white" fill="white" />
-            </div>
-            <div>
-              <h1 style={{ fontSize: 26, fontWeight: 900, margin: 0, color: "#111827" }}>مفضلاتي</h1>
-              <p style={{ fontSize: 13, color: "#9ca3af", margin: 0 }}>المنتجات التي حفظتها من موردي مواد البناء</p>
-            </div>
+          <div>
+            <h1 style={{ fontSize: 32, fontWeight: 900, margin: "0 0 4px", color: "#111827", letterSpacing: -0.5 }}>مفضلاتي</h1>
+            <p style={{ fontSize: 14, color: "#9ca3af", margin: 0 }}>المنتجات التي حفظتها من موردي مواد البناء</p>
           </div>
           {!loading && products.length > 0 && (
             <span style={{ fontSize: 13, color: "#9ca3af", fontWeight: 500 }}>{products.length} منتج محفوظ</span>
@@ -72,9 +67,9 @@ function FavCard({ product, onRemove, onCompanyClick }) {
     await onRemove(product.id);
   };
   return (
-    <div style={{ background: "white", borderRadius: 20, overflow: "hidden", boxShadow: "0 2px 14px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.04)", transition: "transform 0.15s, box-shadow 0.15s", opacity: removing ? 0.4 : 1 }}
-      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.09)"; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 14px rgba(0,0,0,0.06)"; }}>
+    <div style={{ background: "white", borderRadius: 12, overflow: "hidden", border: "1px solid #EDE3D8", transition: "border-color 0.15s", opacity: removing ? 0.4 : 1 }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = "#C4956A"; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = "#EDE3D8"; }}>
       {}
       <div style={{ height: 170, background: imgSrc ? "transparent" : "#f9fafb", overflow: "hidden", position: "relative" }}>
         {imgSrc
@@ -140,14 +135,11 @@ function FavCard({ product, onRemove, onCompanyClick }) {
 }
 function EmptyState({ onBrowse }) {
   return (
-    <div style={{ textAlign: "center", padding: "80px 20px", color: "#9ca3af" }}>
-      <div style={{ width: 80, height: 80, background: "#fff1e8", borderRadius: 24, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
-        <Heart size={36} color="#C4956A" style={{ opacity: 0.4 }} />
-      </div>
+    <div style={{ textAlign: "center", padding: "80px 20px" }}>
       <p style={{ fontSize: 18, fontWeight: 800, color: "#374151", marginBottom: 8 }}>لا توجد منتجات محفوظة</p>
-      <p style={{ fontSize: 13, marginBottom: 28 }}>تصفّح مواد البناء وأضف ما يعجبك للمفضلة</p>
+      <p style={{ fontSize: 13, color: "#9ca3af", marginBottom: 28 }}>تصفّح مواد البناء وأضف ما يعجبك للمفضلة</p>
       <button onClick={onBrowse}
-        style={{ background: "linear-gradient(135deg,#A67C52,#C4956A)", color: "white", border: "none", borderRadius: 14, padding: "13px 32px", fontSize: 14, fontWeight: 700, cursor: "pointer", boxShadow: "0 6px 18px rgba(196,149,106,0.35)" }}>
+        style={{ background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "12px 28px", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
         تصفح مواد البناء
       </button>
     </div>
@@ -155,7 +147,7 @@ function EmptyState({ onBrowse }) {
 }
 function SkeletonCard() {
   return (
-    <div style={{ background: "white", borderRadius: 20, overflow: "hidden", border: "1px solid rgba(0,0,0,0.04)" }}>
+    <div style={{ background: "white", borderRadius: 12, overflow: "hidden", border: "1px solid #EDE3D8" }}>
       <div style={{ height: 170, background: "linear-gradient(90deg,#f3f4f6 25%,#e9eaec 50%,#f3f4f6 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.4s infinite" }} />
       <div style={{ padding: "16px 18px" }}>
         <div style={{ height: 14, background: "#f3f4f6", borderRadius: 6, marginBottom: 10, width: "55%" }} />

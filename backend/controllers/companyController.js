@@ -48,7 +48,7 @@ exports.updateMyProfile = async (req, res) => {
   try {
     const company = await Company.findOne({ where: { user_id: req.user.id } });
     if (!company) return res.status(404).json({ message: "لم يتم العثور على بيانات الشركة" });
-    const { description, specializations, city, categories } = req.body;
+    const { description, specializations, city, categories, phone, email } = req.body;
     if (description     !== undefined) company.description     = description;
     if (city            !== undefined) company.city            = city;
     if (specializations !== undefined) {
@@ -63,6 +63,15 @@ exports.updateMyProfile = async (req, res) => {
     }
     if (req.file) company.coverPhoto = `/uploads/covers/${req.file.filename}`;
     await company.save();
+    // تحديث بيانات المستخدم (الهاتف والبريد)
+    if (phone !== undefined || email !== undefined) {
+      const user = await User.findByPk(req.user.id);
+      if (user) {
+        if (phone !== undefined) user.phone = phone;
+        if (email !== undefined) user.email = email;
+        await user.save();
+      }
+    }
     res.json({ status: "success", data: company });
   } catch (err) {
     res.status(500).json({ error: err.message });

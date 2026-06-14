@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BookOpen, Plus, X, Trash2, Image, Loader } from "lucide-react";
+import { Plus, X, Trash2, Image, Loader } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -105,36 +105,31 @@ export default function Notes() {
   return (
     <div style={{ minHeight: "100vh", background: "#FAF7F0" }} dir="rtl">
 
-      <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 24px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ width: 50, height: 50, background: "#F0E4D0", borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", color: "#C4956A" }}>
-            <BookOpen size={24} />
-          </div>
-          <div>
-            <h1 style={{ fontSize: 28, fontWeight: 900, margin: 0 }}>مذكراتي</h1>
-            <p style={{ color: "#6b7280", fontSize: 13, margin: "3px 0 0" }}>سجّل ملاحظاتك وتفاصيل كل مرحلة</p>
-          </div>
+      <div style={{ background: "white", padding: "36px 24px 28px" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+          <h1 style={{ fontSize: 32, fontWeight: 900, margin: "0 0 4px", letterSpacing: -0.5 }}>مذكراتي</h1>
+          <p style={{ color: "#9ca3af", fontSize: 14, margin: 0 }}>سجّل ملاحظاتك وتفاصيل كل مرحلة</p>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          style={{ display: "flex", alignItems: "center", gap: 8, background: "#C4956A", color: "white", border: "none", borderRadius: 14, padding: "12px 22px", fontWeight: 700, fontSize: 14, cursor: "pointer", boxShadow: "0 4px 14px rgba(196,149,106,0.35)" }}
-        >
-          <Plus size={17} /> مذكرة جديدة
-        </button>
       </div>
 
-      <div style={{ maxWidth: 860, margin: "0 auto", padding: "0 24px 24px" }}>
-        <div style={{ display: "flex", gap: 8, overflowX: "auto", flexWrap: "nowrap", paddingBottom: 6, scrollbarWidth: "none" }}>
+      <div style={{ maxWidth: 860, margin: "0 auto", padding: "20px 24px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        <button
+          onClick={() => setShowForm(true)}
+          style={{ display: "flex", alignItems: "center", gap: 8, background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: "pointer", flexShrink: 0 }}
+        >
+          <Plus size={15} /> مذكرة جديدة
+        </button>
+        <div style={{ display: "flex", gap: 8, overflowX: "auto", flexWrap: "nowrap", scrollbarWidth: "none" }}>
           {["كل المراحل", "التخطيط والميزانية", "التصميم الهندسي", "استخراج التراخيص", "الحفر والأساسيات", "التسليم النهائي"].map(ph => (
             <button
               key={ph}
               onClick={() => setFilter(ph)}
               style={{
-                padding: "7px 16px", borderRadius: 999, border: "none", cursor: "pointer",
+                padding: "6px 14px", borderRadius: 6, border: "1px solid", cursor: "pointer",
                 fontSize: 13, fontWeight: 600, transition: "all 0.15s", flexShrink: 0, whiteSpace: "nowrap",
-                background: filter === ph ? "#C4956A" : "white",
+                background: filter === ph ? "#1B3A2D" : "white",
                 color:      filter === ph ? "white"   : "#6b7280",
-                boxShadow:  filter === ph ? "0 4px 10px rgba(196,149,106,0.3)" : "none"
+                borderColor: filter === ph ? "#1B3A2D" : "#EDE3D8",
               }}
             >
               {ph}
@@ -150,9 +145,8 @@ export default function Notes() {
             <p>جاري التحميل...</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "56px 0", color: "#9ca3af" }}>
-            <BookOpen size={48} style={{ margin: "0 auto 16px", opacity: 0.25 }} />
-            <p style={{ fontSize: 15 }}>لا توجد مذكرات بعد — أضف أولى مذكراتك!</p>
+          <div style={{ textAlign: "center", padding: "64px 0", color: "#9ca3af" }}>
+            <p style={{ fontSize: 15, margin: 0 }}>لا توجد مذكرات بعد — أضف أولى مذكراتك!</p>
           </div>
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 18 }}>
@@ -169,7 +163,7 @@ export default function Notes() {
           onClick={() => setShowForm(false)}
         >
           <div
-            style={{ background: "white", width: "100%", maxWidth: 460, borderRadius: 28, padding: 32, position: "relative", boxShadow: "0 20px 60px rgba(0,0,0,0.2)", maxHeight: "90vh", overflowY: "auto" }}
+            style={{ background: "white", width: "100%", maxWidth: 460, borderRadius: 16, padding: 32, position: "relative", boxShadow: "0 8px 32px rgba(0,0,0,0.15)", maxHeight: "90vh", overflowY: "auto" }}
             onClick={e => e.stopPropagation()}
           >
             <button onClick={() => setShowForm(false)} style={{ position: "absolute", top: 14, left: 16, background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 20 }}>
@@ -234,7 +228,7 @@ export default function Notes() {
               <button
                 onClick={handleAdd}
                 disabled={!form.title.trim() || submitting}
-                style={{ flex: 1, background: "#C4956A", color: "white", border: "none", borderRadius: 12, padding: "13px 0", fontWeight: 700, fontSize: 14, cursor: "pointer", opacity: (!form.title.trim() || submitting) ? 0.5 : 1 }}
+                style={{ flex: 1, background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "13px 0", fontWeight: 700, fontSize: 14, cursor: "pointer", opacity: (!form.title.trim() || submitting) ? 0.5 : 1 }}
               >
                 {submitting ? "جاري الحفظ..." : "إضافة المذكرة"}
               </button>
@@ -254,9 +248,9 @@ export default function Notes() {
 
 function NoteCard({ note, onDelete }) {
   return (
-    <div style={{ background: "white", borderRadius: 20, overflow: "hidden", boxShadow: "0 4px 14px rgba(0,0,0,0.06)", border: "1px solid #f3f4f6", transition: "box-shadow 0.18s" }}
-      onMouseEnter={e => e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.1)"}
-      onMouseLeave={e => e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,0,0,0.06)"}
+    <div style={{ background: "white", borderRadius: 12, overflow: "hidden", border: "1px solid #EDE3D8", transition: "border-color 0.18s" }}
+      onMouseEnter={e => e.currentTarget.style.borderColor = "#C4956A"}
+      onMouseLeave={e => e.currentTarget.style.borderColor = "#EDE3D8"}
     >
       {note.imageUrl && (
         <img src={note.imageUrl} alt="" style={{ width: "100%", height: 140, objectFit: "cover" }} />

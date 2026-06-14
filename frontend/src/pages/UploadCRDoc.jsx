@@ -21,7 +21,7 @@ export default function UploadCRDoc() {
       const res  = await fetch("/api/auth/upload-cr-doc-open", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) { setError(data.message || data.error || "حدث خطأ"); return; }
-      setSuccess("✅ تم رفع ملف السجل التجاري بنجاح! سيراجعه الأدمن قريباً.");
+      setSuccess("تم رفع ملف السجل التجاري بنجاح. سيراجعه الأدمن قريباً.");
     } catch {
       setError("تعذر الاتصال بالسيرفر");
     } finally {

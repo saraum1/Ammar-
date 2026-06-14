@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Package, MapPin, Briefcase, Star, Search, Tag, X, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import defaultCover from "../assets/background.png";
 const CATEGORIES = ["الكل", "اسمنت", "حديد", "خشب", "بلاط", "دهانات", "كهربائيات", "سباكة", "عزل", "رخام"];
 const SORT_OPTIONS = [
   { value: "default",  label: "الافتراضي" },
@@ -76,18 +77,16 @@ export default function BuildingMaterials() {
   return (
     <div style={{ background: "#FAF7F0", minHeight: "100vh" }} dir="rtl">
       {}
-      <div style={{ textAlign: "center", padding: "60px 20px 36px" }}>
-        <div style={{ width: 60, height: 60, background: "#F0E4D0", borderRadius: 18, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px", boxShadow: "0 4px 14px rgba(196,149,106,0.2)" }}>
-          <Package size={28} color="#C4956A" />
+      <div style={{ background: "white", padding: "36px 72px 28px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <h1 style={{ fontSize: 32, fontWeight: 900, margin: "0 0 4px", color: "#111827", letterSpacing: -0.5 }}>مواد البناء</h1>
+          <p style={{ color: "#9ca3af", fontSize: 14, margin: 0 }}>ابحث عن منتجات أو موردين</p>
         </div>
-        <h1 style={{ fontSize: 36, fontWeight: 900, margin: "0 0 10px", color: "#111827" }}>مواد البناء</h1>
-        <p style={{ color: "#6b7280", fontSize: 15, margin: 0 }}>ابحث عن منتجات أو موردين — مباشرةً بدون الدخول لكل شركة</p>
       </div>
-      {}
-      <div style={{ maxWidth: 820, margin: "0 auto 32px", padding: "0 24px", display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ maxWidth: 820, margin: "0 auto 32px", padding: "24px 24px 0", display: "flex", flexDirection: "column", gap: 12 }}>
         {}
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <div style={{ flex: 1, display: "flex", alignItems: "center", background: "white", borderRadius: 14, padding: "11px 16px", gap: 10, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1px solid #EDE3D8" }}>
+          <div style={{ flex: 1, display: "flex", alignItems: "center", background: "white", borderRadius: 8, padding: "11px 16px", gap: 10, border: "1px solid #EDE3D8" }}>
             <Search size={17} color="#9ca3af" />
             <input
               type="text"
@@ -106,7 +105,7 @@ export default function BuildingMaterials() {
             <select
               value={sort}
               onChange={e => setSort(e.target.value)}
-              style={{ background: "white", border: "1px solid #EDE3D8", borderRadius: 12, padding: "11px 14px", fontSize: 13, color: "#374151", cursor: "pointer", outline: "none", fontFamily: "inherit", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+              style={{ background: "white", border: "1px solid #EDE3D8", borderRadius: 8, padding: "11px 14px", fontSize: 13, color: "#374151", cursor: "pointer", outline: "none", fontFamily: "inherit" }}
             >
               {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
@@ -153,10 +152,9 @@ export default function BuildingMaterials() {
               {[1,2,3,4,5,6].map(i => <SkeletonProduct key={i} />)}
             </div>
           ) : products.length === 0 ? (
-            <div style={{ textAlign: "center", padding: 60, color: "#9ca3af" }}>
-              <Package size={48} style={{ margin: "0 auto 16px", opacity: 0.2 }} />
-              <p style={{ fontSize: 16, fontWeight: 600 }}>لا توجد منتجات مطابقة</p>
-              <p style={{ fontSize: 13, marginTop: 8 }}>حاول البحث بكلمة مختلفة أو غيّر الفئة</p>
+            <div style={{ textAlign: "center", padding: 60 }}>
+              <p style={{ fontSize: 16, fontWeight: 600, color: "#9ca3af" }}>لا توجد منتجات مطابقة</p>
+              <p style={{ fontSize: 13, color: "#9ca3af", marginTop: 8 }}>حاول البحث بكلمة مختلفة أو غيّر الفئة</p>
             </div>
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20 }}>
@@ -184,9 +182,8 @@ export default function BuildingMaterials() {
             {loadingCo ? (
               [1,2,3].map(i => <SkeletonCard key={i} />)
             ) : filteredCompanies.length === 0 ? (
-              <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 60, color: "#9ca3af" }}>
-                <Package size={48} style={{ margin: "0 auto 16px", opacity: 0.2 }} />
-                <p style={{ fontSize: 16, fontWeight: 600 }}>لا يوجد موردون مسجّلون بعد</p>
+              <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 60 }}>
+                <p style={{ fontSize: 16, fontWeight: 600, color: "#9ca3af" }}>لا يوجد موردون مسجّلون بعد</p>
               </div>
             ) : (
               filteredCompanies.map(c => (
@@ -202,14 +199,14 @@ export default function BuildingMaterials() {
 function ProductResultCard({ product, onCompanyClick, isFav, onToggleFav, showFav }) {
   const imgSrc = product.imageUrl
     ? (product.imageUrl.startsWith("http") ? product.imageUrl : `${product.imageUrl}`)
-    : "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=400&q=80";
+    : "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80";
   const companyImg = product.Company?.coverPhoto
     ? `${product.Company.coverPhoto}`
     : null;
   return (
-    <div style={{ background: "white", borderRadius: 20, overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.04)", transition: "transform 0.2s, box-shadow 0.2s" }}
-      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 14px 32px rgba(0,0,0,0.12)"; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.07)"; }}
+    <div style={{ background: "white", borderRadius: 8, overflow: "hidden", border: "1px solid #EDE3D8", transition: "border-color 0.2s" }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = "#C4956A"; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = "#EDE3D8"; }}
     >
       {}
       <div style={{ height: 160, overflow: "hidden", position: "relative" }}>
@@ -273,13 +270,13 @@ function ProductResultCard({ product, onCompanyClick, isFav, onToggleFav, showFa
 function SupplierCard({ company, onClick }) {
   const coverImg = company.coverPhoto
     ? `${company.coverPhoto}`
-    : "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&q=80";
+    : "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80";
   return (
     <div
       onClick={onClick}
-      style={{ background: "white", borderRadius: 22, overflow: "hidden", boxShadow: "0 4px 18px rgba(0,0,0,0.07)", cursor: "pointer", transition: "transform 0.2s, box-shadow 0.2s", border: "1px solid rgba(0,0,0,0.03)" }}
-      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-5px)"; e.currentTarget.style.boxShadow = "0 16px 36px rgba(0,0,0,0.12)"; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)";   e.currentTarget.style.boxShadow = "0 4px 18px rgba(0,0,0,0.07)"; }}
+      style={{ background: "white", borderRadius: 4, overflow: "hidden", border: "1px solid #E8DDD0", cursor: "pointer", transition: "transform 0.2s, border-color 0.2s", borderBottom: "3px solid transparent" }}
+      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.borderBottomColor = "#C4956A"; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderBottomColor = "transparent"; }}
     >
       <div style={{ height: 190, overflow: "hidden", position: "relative" }}>
         <img src={coverImg} alt={company.ownerName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -314,7 +311,7 @@ function SupplierCard({ company, onClick }) {
 }
 function SkeletonProduct() {
   return (
-    <div style={{ background: "white", borderRadius: 20, overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.06)" }}>
+    <div style={{ background: "white", borderRadius: 8, overflow: "hidden", border: "1px solid #EDE3D8" }}>
       <div style={{ height: 160, background: "#f3f4f6" }} />
       <div style={{ padding: "14px 16px" }}>
         <div style={{ height: 14, background: "#f3f4f6", borderRadius: 6, marginBottom: 8, width: "70%" }} />
@@ -326,12 +323,12 @@ function SkeletonProduct() {
 }
 function SkeletonCard() {
   return (
-    <div style={{ background: "white", borderRadius: 22, overflow: "hidden", boxShadow: "0 4px 18px rgba(0,0,0,0.06)" }}>
+    <div style={{ background: "white", borderRadius: 4, overflow: "hidden", border: "1px solid #E8DDD0" }}>
       <div style={{ height: 190, background: "#f3f4f6" }} />
       <div style={{ padding: "18px 20px" }}>
-        <div style={{ height: 16, background: "#f3f4f6", borderRadius: 8, marginBottom: 10, width: "60%" }} />
-        <div style={{ height: 12, background: "#f3f4f6", borderRadius: 8, marginBottom: 6 }} />
-        <div style={{ height: 12, background: "#f3f4f6", borderRadius: 8, width: "80%" }} />
+        <div style={{ height: 16, background: "#f3f4f6", borderRadius: 4, marginBottom: 10, width: "60%" }} />
+        <div style={{ height: 12, background: "#f3f4f6", borderRadius: 4, marginBottom: 6 }} />
+        <div style={{ height: 12, background: "#f3f4f6", borderRadius: 4, width: "80%" }} />
       </div>
     </div>
   );

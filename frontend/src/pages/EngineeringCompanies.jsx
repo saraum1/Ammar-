@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Building2, MapPin, Briefcase, Star, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import defaultCover from "../assets/background.png";
 
 const SORT_OPTIONS = [
   { value: "default",  label: "الافتراضي" },
@@ -33,18 +34,17 @@ export default function EngineeringCompanies() {
 
   return (
     <div style={{ background: "#FAF7F0", minHeight: "100vh" }} dir="rtl">
-      {/* Hero */}
-      <div style={{ textAlign: "center", padding: "60px 20px 36px" }}>
-        <div style={{ width: 60, height: 60, background: "#F0E4D0", borderRadius: 18, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px", boxShadow: "0 4px 14px rgba(196,149,106,0.2)" }}>
-          <Building2 size={28} color="#C4956A" />
+      {/* Header */}
+      <div style={{ background: "white", padding: "36px 72px 28px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <h1 style={{ fontSize: 32, fontWeight: 900, margin: "0 0 4px", color: "#111827", letterSpacing: -0.5 }}>الشركات الهندسية</h1>
+          <p style={{ color: "#9ca3af", fontSize: 14, margin: 0 }}>اعثر على أفضل المكاتب الهندسية لتصميم بيت أحلامك</p>
         </div>
-        <h1 style={{ fontSize: 36, fontWeight: 900, margin: "0 0 10px", color: "#111827" }}>الشركات الهندسية</h1>
-        <p style={{ color: "#6b7280", fontSize: 15, margin: 0 }}>اعثر على أفضل المكاتب الهندسية لتصميم بيت أحلامك</p>
       </div>
 
       {/* Search & Sort */}
-      <div style={{ maxWidth: 700, margin: "0 auto 36px", padding: "0 24px", display: "flex", gap: 10, alignItems: "center" }}>
-        <div style={{ flex: 1, display: "flex", alignItems: "center", background: "white", borderRadius: 14, padding: "11px 16px", gap: 10, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1px solid #EDE3D8" }}>
+      <div style={{ maxWidth: 700, margin: "0 auto 36px", padding: "24px 24px 0", display: "flex", gap: 10, alignItems: "center" }}>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", background: "white", borderRadius: 8, padding: "11px 16px", gap: 10, border: "1px solid #EDE3D8" }}>
           <Search size={17} color="#9ca3af" />
           <input
             type="text"
@@ -57,7 +57,7 @@ export default function EngineeringCompanies() {
         <select
           value={sort}
           onChange={e => setSort(e.target.value)}
-          style={{ background: "white", border: "1px solid #EDE3D8", borderRadius: 12, padding: "11px 14px", fontSize: 13, color: "#374151", cursor: "pointer", outline: "none", fontFamily: "inherit", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+          style={{ background: "white", border: "1px solid #EDE3D8", borderRadius: 8, padding: "11px 14px", fontSize: 13, color: "#374151", cursor: "pointer", outline: "none", fontFamily: "inherit" }}
         >
           {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
@@ -75,9 +75,8 @@ export default function EngineeringCompanies() {
         {loading ? (
           [1,2,3].map(i => <SkeletonCard key={i} />)
         ) : filtered.length === 0 ? (
-          <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 60, color: "#9ca3af" }}>
-            <Building2 size={48} style={{ margin: "0 auto 16px", opacity: 0.2 }} />
-            <p style={{ fontSize: 16, fontWeight: 600 }}>{search ? `لا توجد نتائج لـ "${search}"` : "لا توجد شركات هندسية مسجّلة بعد"}</p>
+          <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 60 }}>
+            <p style={{ fontSize: 16, fontWeight: 600, color: "#9ca3af" }}>{search ? `لا توجد نتائج لـ "${search}"` : "لا توجد شركات هندسية مسجّلة بعد"}</p>
           </div>
         ) : (
           filtered.map(c => (
@@ -92,14 +91,14 @@ export default function EngineeringCompanies() {
 function CompanyCard({ company, badge, onView }) {
   const coverImg = company.coverPhoto
     ? `${company.coverPhoto}`
-    : "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80";
+    : "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80";
 
   return (
     <div
       onClick={onView}
-      style={{ background: "white", borderRadius: 22, overflow: "hidden", boxShadow: "0 4px 18px rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.03)", display: "flex", flexDirection: "column", cursor: "pointer", transition: "transform 0.2s, box-shadow 0.2s" }}
-      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-5px)"; e.currentTarget.style.boxShadow = "0 16px 36px rgba(0,0,0,0.12)"; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 18px rgba(0,0,0,0.07)"; }}
+      style={{ background: "white", borderRadius: 4, overflow: "hidden", border: "1px solid #E8DDD0", display: "flex", flexDirection: "column", cursor: "pointer", transition: "border-color 0.2s, transform 0.2s", borderBottom: "3px solid transparent" }}
+      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.borderBottomColor = "#C4956A"; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderBottomColor = "transparent"; }}
     >
       {/* Cover image */}
       <div
@@ -142,7 +141,7 @@ function CompanyCard({ company, badge, onView }) {
 
 function SkeletonCard() {
   return (
-    <div style={{ background: "white", borderRadius: 22, overflow: "hidden", boxShadow: "0 4px 18px rgba(0,0,0,0.06)" }}>
+    <div style={{ background: "white", borderRadius: 4, overflow: "hidden", border: "1px solid #E8DDD0" }}>
       <div style={{ height: 190, background: "linear-gradient(90deg,#f3f4f6 25%,#e5e7eb 50%,#f3f4f6 75%)", backgroundSize: "400% 100%", animation: "shimmer 1.4s infinite" }} />
       <div style={{ padding: "18px 20px" }}>
         <div style={{ height: 16, background: "#f3f4f6", borderRadius: 8, marginBottom: 10, width: "60%" }} />

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { ShoppingBag, MapPin, ChevronDown, ChevronUp } from "lucide-react";
+import { MapPin, ChevronDown, ChevronUp } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const STEPS = [
-  { key: "pending",   label: "تم الطلب",    icon: "🛒", sublabel: "استلمنا طلبك" },
-  { key: "confirmed", label: "تم التأكيد",  icon: "✅", sublabel: "المورد أكد الطلب" },
-  { key: "shipped",   label: "جارٍ التوصيل", icon: "🚚", sublabel: "في الطريق إليك" },
-  { key: "delivered", label: "تم التسليم",  icon: "📦", sublabel: "وصل بنجاح" },
+  { key: "pending",   label: "تم الطلب",    sublabel: "استلمنا طلبك" },
+  { key: "confirmed", label: "تم التأكيد",  sublabel: "المورد أكد الطلب" },
+  { key: "shipped",   label: "جارٍ التوصيل", sublabel: "في الطريق إليك" },
+  { key: "delivered", label: "تم التسليم",  sublabel: "وصل بنجاح" },
 ];
 
 const STEP_ORDER = ["pending", "confirmed", "shipped", "delivered"];
@@ -32,15 +32,10 @@ export default function MyOrders() {
     <div style={{ background: "#FAF7F0", minHeight: "100vh", direction: "rtl" }}>
 
       {/* Header */}
-      <div style={{ background: "white", borderBottom: "1px solid #f0e8df", padding: "36px 48px 28px" }}>
-        <div style={{ maxWidth: 820, margin: "0 auto", display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ width: 48, height: 48, background: "linear-gradient(135deg,#A67C52,#C4956A)", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(196,149,106,0.3)" }}>
-            <ShoppingBag size={22} color="white" />
-          </div>
-          <div>
-            <h1 style={{ fontSize: 26, fontWeight: 900, margin: 0, color: "#111827" }}>طلباتي</h1>
-            <p style={{ fontSize: 13, color: "#9ca3af", margin: 0 }}>تتبع طلبياتك من موردي مواد البناء</p>
-          </div>
+      <div style={{ background: "white", padding: "36px 48px 28px" }}>
+        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          <h1 style={{ fontSize: 32, fontWeight: 900, margin: "0 0 4px", color: "#111827", letterSpacing: -0.5 }}>طلباتي</h1>
+          <p style={{ fontSize: 14, color: "#9ca3af", margin: 0 }}>تتبع طلبياتك من موردي مواد البناء</p>
         </div>
       </div>
 
@@ -49,22 +44,19 @@ export default function MyOrders() {
         {loading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {[1,2,3].map(i => (
-              <div key={i} style={{ background: "white", borderRadius: 20, padding: 24 }}>
+              <div key={i} style={{ background: "white", borderRadius: 10, padding: 24, border: "1px solid #EDE3D8" }}>
                 <div style={{ height: 14, background: "#f3f4f6", borderRadius: 6, width: "40%", marginBottom: 12 }} />
                 <div style={{ height: 10, background: "#f3f4f6", borderRadius: 6, width: "70%" }} />
               </div>
             ))}
           </div>
         ) : orders.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "80px 20px", color: "#9ca3af" }}>
-            <div style={{ width: 80, height: 80, background: "#fff1e8", borderRadius: 24, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
-              <ShoppingBag size={36} color="#C4956A" style={{ opacity: 0.5 }} />
-            </div>
+          <div style={{ textAlign: "center", padding: "80px 20px" }}>
             <p style={{ fontSize: 18, fontWeight: 800, color: "#374151", marginBottom: 8 }}>لا توجد طلبيات بعد</p>
-            <p style={{ fontSize: 13, marginBottom: 28 }}>تصفّح موردي مواد البناء وأضف منتجات للسلة</p>
+            <p style={{ fontSize: 13, color: "#9ca3af", marginBottom: 28 }}>تصفّح موردي مواد البناء وأضف منتجات للسلة</p>
             <button
               onClick={() => navigate("/materials")}
-              style={{ background: "linear-gradient(135deg,#A67C52,#C4956A)", color: "white", border: "none", borderRadius: 14, padding: "13px 32px", fontSize: 14, fontWeight: 700, cursor: "pointer", boxShadow: "0 6px 18px rgba(196,149,106,0.35)" }}
+              style={{ background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "12px 28px", fontSize: 14, fontWeight: 700, cursor: "pointer" }}
             >
               تصفح مواد البناء
             </button>
@@ -86,10 +78,9 @@ function OrderCard({ order: o, expanded, onToggle }) {
 
   return (
     <div style={{
-      background: "white", borderRadius: 22,
-      boxShadow: "0 2px 14px rgba(0,0,0,0.06)",
+      background: "white", borderRadius: 10,
       overflow: "hidden",
-      border: isCancelled ? "1.5px solid #fecaca" : "1.5px solid transparent",
+      border: isCancelled ? "1.5px solid #fecaca" : "1px solid #EDE3D8",
     }}>
 
       {/* ── Header ── */}
@@ -117,7 +108,7 @@ function OrderCard({ order: o, expanded, onToggle }) {
           </div>
           {isCancelled ? (
             <span style={{ background: "#fee2e2", color: "#991b1b", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 999 }}>
-              ملغى ❌
+              ملغى
             </span>
           ) : (
             <span style={{
@@ -219,7 +210,7 @@ function OrderCard({ order: o, expanded, onToggle }) {
             <span>{o.address}</span>
           </div>
           {o.notes && (
-            <p style={{ fontSize: 13, color: "#6b7280", margin: "8px 0 0", textAlign: "right" }}>📝 {o.notes}</p>
+            <p style={{ fontSize: 13, color: "#6b7280", margin: "8px 0 0", textAlign: "right" }}>{o.notes}</p>
           )}
         </div>
       )}
