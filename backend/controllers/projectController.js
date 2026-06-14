@@ -92,7 +92,7 @@ exports.updatePhase = async (req, res) => {
     project.changed("phases", true);
     await project.save();
     await notify(project.client_id, "phase_update",
-      `🏗️ تم تحديث مرحلة "${phases[phaseIndex].name}" إلى ${progress}% في مشروع "${project.type}"`,
+      `تم تحديث مرحلة "${phases[phaseIndex].name}" إلى ${progress}% في مشروع "${project.type}"`,
       project.id
     );
     res.json({ status: "success", data: project });
@@ -121,7 +121,7 @@ exports.addUpdate = async (req, res) => {
       include: [{ model: User, as: "Client", attributes: ["firstName", "lastName", "phone", "email"] }]
     });
     await notify(project.client_id, "new_update",
-      `📢 أضافت الشركة تحديثاً جديداً على مشروع "${project.type}"`,
+      `أضافت الشركة تحديثاً جديداً على مشروع "${project.type}"`,
       project.id
     );
     res.json({ status: "success", data: updated });
@@ -151,7 +151,7 @@ exports.addClientNote = async (req, res) => {
       const client = await User.findByPk(req.user.id, { attributes: ["firstName", "lastName"] });
       const name = client ? `${client.firstName} ${client.lastName}` : "العميل";
       await notify(updated.Company.user_id, "new_note",
-        `💬 أضاف ${name} ملاحظة جديدة على مشروع "${project.type}"`,
+        `أضاف ${name} ملاحظة جديدة على مشروع "${project.type}"`,
         project.id
       );
     }
@@ -215,7 +215,7 @@ exports.updateProjectStatus = async (req, res) => {
     await project.save();
     const statusLabel = { active: "جارٍ", completed: "مكتمل", paused: "متوقف" }[status] || status;
     await notify(project.client_id, "status_change",
-      `📋 تغيّرت حالة مشروعك "${project.type}" إلى: ${statusLabel}`,
+      `تغيّرت حالة مشروعك "${project.type}" إلى: ${statusLabel}`,
       project.id
     );
     res.json({ status: "success", data: project });

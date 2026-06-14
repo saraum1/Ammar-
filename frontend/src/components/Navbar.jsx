@@ -16,31 +16,34 @@ const GUEST_LINKS = [
   { to: "/materials",   label: "مواد البناء" },
 ];
 const CLIENT_LINKS = [
-  { to: "/",            label: "الرئيسية" },
+  { to: "/home",        label: "الرئيسية" },
   { to: "/engineering", label: "الشركات الهندسية" },
   { to: "/contracting", label: "شركات المقاولات" },
   { to: "/materials",   label: "مواد البناء" },
   { to: "/notes",       label: "مذكراتي" },
 ];
 const COMPANY_LINKS = [
-  { to: "/",            label: "الرئيسية" },
+  { to: "/home",        label: "الرئيسية" },
   { to: "/engineering", label: "الشركات الهندسية" },
   { to: "/contracting", label: "شركات المقاولات" },
   { to: "/materials",   label: "مواد البناء" },
 ];
 const ADMIN_LINKS = [
-  { to: "/",            label: "الرئيسية" },
+  { to: "/home",        label: "الرئيسية" },
   { to: "/engineering", label: "الشركات الهندسية" },
   { to: "/contracting", label: "شركات المقاولات" },
   { to: "/materials",   label: "مواد البناء" },
 ];
 
 const NOTIF_ICONS = {
-  new_update: "📢", new_note: "💬", phase_update: "🏗️",
-  status_change: "📋", new_meeting: "📅",
-  meeting_confirmed: "✅", meeting_declined: "❌",
-  new_order: "🛒",
+  new_update: "·", new_note: "·", phase_update: "·",
+  status_change: "·", new_meeting: "·",
+  meeting_confirmed: "·", meeting_declined: "·",
+  new_order: "·",
 };
+
+const stripEmojis = (str) =>
+  str.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}]/gu, "").trim();
 
 export default function Navbar() {
   const { token, user, logout } = useAuth();
@@ -131,7 +134,7 @@ export default function Navbar() {
       }}>
 
         {/* Logo */}
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: 0, textDecoration: "none", flexShrink: 0, marginLeft: "auto" }}>
+        <Link to={token ? "/home" : "/"} style={{ display: "flex", alignItems: "center", gap: 0, textDecoration: "none", flexShrink: 0, marginLeft: "auto" }}>
           <img
             src={logoImg}
             alt="عمار"
@@ -230,12 +233,12 @@ export default function Navbar() {
                 {bellOpen && (
                   <div style={{
                     position: "absolute", top: 50, left: "50%", transform: "translateX(-50%)",
-                    width: 330, background: "white", borderRadius: 20,
-                    boxShadow: "0 20px 60px rgba(27,58,45,0.15)", zIndex: 200,
+                    width: 330, background: "white", borderRadius: 12,
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 200,
                     overflow: "hidden", border: "1px solid #EDE3D8",
                   }}>
                     <div style={{ padding: "14px 18px 10px", borderBottom: "1px solid #F2E8DC", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <button onClick={handleMarkAllRead} style={{ fontSize: 11, color: "#9CA3AF", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit" }}>مسح الكل ✓</button>
+                      <button onClick={handleMarkAllRead} style={{ fontSize: 11, color: "#9CA3AF", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit" }}>مسح الكل</button>
                       <span style={{ fontWeight: 800, fontSize: 14, color: DARK }}>
                         الإشعارات {unread > 0 && <span style={{ background: BRONZE, color: "white", fontSize: 10, padding: "1px 6px", borderRadius: 999, marginRight: 4 }}>{unread}</span>}
                       </span>
@@ -243,7 +246,6 @@ export default function Navbar() {
                     <div style={{ maxHeight: 360, overflowY: "auto" }}>
                       {notifs.length === 0 ? (
                         <div style={{ textAlign: "center", padding: "32px 20px", color: "#9CA3AF" }}>
-                          <p style={{ fontSize: 26, margin: "0 0 8px" }}>🔔</p>
                           <p style={{ fontSize: 13 }}>لا توجد إشعارات بعد</p>
                         </div>
                       ) : notifs.map(n => (
@@ -255,9 +257,9 @@ export default function Navbar() {
                         onMouseEnter={e => e.currentTarget.style.background="#F2E8DC"}
                         onMouseLeave={e => e.currentTarget.style.background=n.read?"white":"#FDF8F3"}
                         >
-                          <span style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }}>{NOTIF_ICONS[n.type] || "🔔"}</span>
+                          <span style={{ width: 6, height: 6, borderRadius: "50%", background: n.read ? "#d1d5db" : "#C4956A", flexShrink: 0, marginTop: 6, display: "inline-block" }}></span>
                           <div style={{ flex: 1, textAlign: "right" }}>
-                            <p style={{ fontSize: 13, color: DARK, margin: "0 0 3px", lineHeight: 1.55, fontWeight: n.read ? 400 : 600 }}>{n.message}</p>
+                            <p style={{ fontSize: 13, color: DARK, margin: "0 0 3px", lineHeight: 1.55, fontWeight: n.read ? 400 : 600 }}>{stripEmojis(n.message)}</p>
                             <p style={{ fontSize: 11, color: "#9CA3AF", margin: 0 }}>
                               {new Date(n.createdAt).toLocaleDateString("ar-SA", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                             </p>

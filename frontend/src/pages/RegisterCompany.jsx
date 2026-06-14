@@ -47,8 +47,14 @@ export default function RegisterCompany() {
     }
 
 
-    if (form.username && form.username.length < 3) {
-      newErrors.username = "Username must be at least 3 characters";
+    if (!form.username) {
+      newErrors.username = "اسم المستخدم مطلوب";
+    } else if (form.username.length < 3) {
+      newErrors.username = "اسم المستخدم يجب أن يكون 3 أحرف على الأقل";
+    } else if (form.username.length > 20) {
+      newErrors.username = "اسم المستخدم لا يتجاوز 20 حرفاً";
+    } else if (!/^[a-zA-Z0-9_]+$/.test(form.username)) {
+      newErrors.username = "يُسمح فقط بأحرف إنجليزية وأرقام وشرطة سفلية (_)";
     }
 
     if (form.password && form.password.length < 6) {
@@ -128,7 +134,7 @@ export default function RegisterCompany() {
         }
       }
 
-      setSuccess("تم إرسال طلب التسجيل بنجاح وتم رفع ملف السجل التجاري ✓ سيتم مراجعة بياناتك والرد عليك قريباً");
+      setSuccess("تم إرسال طلب التسجيل بنجاح. سيتم مراجعة بياناتك والرد عليك قريباً");
     } catch (error) {
       setErrors({ general: "تعذر الاتصال بالسيرفر" });
     }
@@ -136,7 +142,7 @@ export default function RegisterCompany() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F0] py-12 px-4" dir="rtl">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-10 border border-gray-100">
+      <div className="max-w-3xl mx-auto bg-white rounded-xl p-10 border border-gray-200">
         <h2 className="text-3xl font-bold text-center text-[#1B3A2D] mb-8">
           تسجيل شركة جديدة
         </h2>
@@ -340,13 +346,13 @@ export default function RegisterCompany() {
                 <>
                   <CheckCircle className="w-8 h-8 text-green-500 mb-2" />
                   <p className="text-sm text-green-700 font-semibold">{crFile.name}</p>
-                  <p className="text-xs text-green-500 mt-1">تم اختيار الملف ✓</p>
+                  <p className="text-xs text-green-500 mt-1">تم اختيار الملف</p>
                 </>
               ) : (
                 <>
                   <Upload className={`w-8 h-8 mb-2 ${errors.crFile ? "text-red-400" : "text-gray-400"}`} />
                   <p className={`text-sm ${errors.crFile ? "text-red-500 font-semibold" : "text-gray-500"}`}>
-                    {errors.crFile ? "⚠️ هذا الحقل مطلوب — اضغط لرفع الملف" : "اضغط هنا لرفع الملف أو اسحبه للمربع"}
+                    {errors.crFile ? "هذا الحقل مطلوب — اضغط لرفع الملف" : "اضغط هنا لرفع الملف أو اسحبه للمربع"}
                   </p>
                   <p className="text-xs text-gray-400 mt-1">PDF فقط — حد أقصى 5MB</p>
                 </>

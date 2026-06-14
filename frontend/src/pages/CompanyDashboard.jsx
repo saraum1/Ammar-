@@ -21,7 +21,7 @@ const PROJ_STATUS = {
   paused:    { label: "متوقف", bg: "#fffbeb", color: "#d97706" },
 };
 
-const PHASE_ICONS = ["📋","✏️","📄","⛏️","🏗️","🏠","🔧","🧱","🎨","🏆"];
+const PHASE_ICONS = ["01","02","03","04","05","06","07","08","09","10"];
 
 function calcProgress(phases) {
   if (!phases?.length) return 0;
@@ -46,6 +46,8 @@ export default function CompanyDashboard() {
   const [desc,        setDesc]        = useState("");
   const [city,        setCity]        = useState("الرياض");
   const [specs,       setSpecs]       = useState("");
+  const [phone,       setPhone]       = useState("");
+  const [email,       setEmail]       = useState("");
   const [selCats,     setSelCats]     = useState([]);
   const [coverPrev,   setCoverPrev]   = useState(null);
   const [coverFile,   setCoverFile]   = useState(null);
@@ -101,6 +103,8 @@ export default function CompanyDashboard() {
           setProfile(d.data);
           setDesc(d.data.description || "");
           setCity(d.data.city || "الرياض");
+          setPhone(d.data.User?.phone || "");
+          setEmail(d.data.User?.email || "");
           setSpecs(Array.isArray(d.data.specializations) ? d.data.specializations.join("، ") : "");
           setSelCats(Array.isArray(d.data.categories) ? d.data.categories : []);
           setTab(t === "materials_supplier" ? "products" : "requests");
@@ -186,10 +190,12 @@ export default function CompanyDashboard() {
   const handleProposeMeeting = async () => {
     setProposeErr("");
     const { projectId, proposedDate, proposedTime, topic, meetLink } = proposeForm;
-    if (!projectId || !proposedDate || !proposedTime || !topic?.trim())
-      return setProposeErr("يرجى تعبئة جميع الحقول");
-    if (!meetLink?.trim())
-      return setProposeErr("رابط الاجتماع إلزامي");
+    if (!projectId) return setProposeErr("اختر المشروع أولاً");
+    if (!proposedDate) return setProposeErr("حدد تاريخ الاجتماع");
+    if (!proposedTime) return setProposeErr("حدد وقت الاجتماع");
+    if (!topic?.trim()) return setProposeErr("اكتب موضوع الاجتماع");
+    if (!meetLink?.trim()) return setProposeErr("أضف رابط الاجتماع — مثال: https://meet.google.com/xxx");
+    if (!/^https?:\/\/.+\..+/.test(meetLink.trim())) return setProposeErr("الرابط غير صحيح، يجب أن يبدأ بـ https://");
     setProposing(true);
     try {
       const r = await fetch("/api/meetings/company-propose", {
@@ -393,7 +399,9 @@ export default function CompanyDashboard() {
           description: desc,
           city,
           specializations: specs.split(/[,،]+/).map(s => s.trim()).filter(Boolean),
-          categories: selCats
+          categories: selCats,
+          phone,
+          email
         })
       });
       if (coverFile) await handleUploadCover();
@@ -556,7 +564,7 @@ export default function CompanyDashboard() {
           {statusError && (
             <div style={{ background: "#fee2e2", color: "#991b1b", borderRadius: 12, padding: "12px 18px", marginBottom: 16, fontSize: 14, fontWeight: 600, display: "flex", justifyContent: "space-between" }}>
               <button onClick={() => setStatusError("")} style={{ background: "none", border: "none", cursor: "pointer", color: "#991b1b", fontWeight: 700 }}>✕</button>
-              <span>❌ {statusError}</span>
+              <span>{statusError}</span>
             </div>
           )}
           {loading ? <Loading /> :
@@ -582,15 +590,14 @@ export default function CompanyDashboard() {
         {tab === "projects" && (
           loading ? <Loading /> :
           projects.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px 32px" }}>
-              <div style={{ marginBottom: 16, color: "#C4956A", display: "flex", justifyContent: "center" }}><HardHat size={48} /></div>
-              <h3 style={{ fontSize: 20, fontWeight: 800, color: "#1B3A2D", marginBottom: 10 }}>لا توجد مشاريع بعد</h3>
-              <p style={{ color: "#6b7280", fontSize: 14, lineHeight: 1.9, marginBottom: 16 }}>
+            <div style={{ textAlign: "center", padding: "64px 32px" }}>
+              <h3 style={{ fontSize: 20, fontWeight: 800, color: "#111827", marginBottom: 10 }}>لا توجد مشاريع بعد</h3>
+              <p style={{ color: "#9ca3af", fontSize: 14, lineHeight: 1.9, marginBottom: 20 }}>
                 المشاريع تُنشأ <strong>تلقائياً</strong> عند قبولك لطلب عميل
               </p>
               <button
                 onClick={() => setTab("requests")}
-                style={{ background: "#C4956A", color: "white", border: "none", borderRadius: 12, padding: "11px 28px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}
+                style={{ background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "11px 28px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}
               >
                 الطلبات
               </button>
@@ -636,7 +643,7 @@ export default function CompanyDashboard() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
                 <h2 style={{ fontSize: 18, fontWeight: 800, color: "#111827", margin: 0 }}>الاجتماعات</h2>
                 <button onClick={() => { setShowProposeForm(v => !v); setProposeErr(""); }}
-                  style={{ display: "flex", alignItems: "center", gap: 7, background: showProposeForm ? "#f3f4f6" : "#C4956A", color: showProposeForm ? "#374151" : "white", border: "none", borderRadius: 12, padding: "10px 20px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
+                  style={{ display: "flex", alignItems: "center", gap: 7, background: showProposeForm ? "#f3f4f6" : "#1B3A2D", color: showProposeForm ? "#374151" : "white", border: "none", borderRadius: 8, padding: "10px 20px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
                   <Plus size={15} /> {showProposeForm ? "إلغاء" : "اقتراح اجتماع"}
                 </button>
               </div>
@@ -664,7 +671,7 @@ export default function CompanyDashboard() {
 
                   <div style={{ display: "flex", justifyContent: "flex-start" }}>
                     <button onClick={handleProposeMeeting} disabled={proposing}
-                      style={{ background: "linear-gradient(135deg,#A67C52,#C4956A)", color: "white", border: "none", borderRadius: 12, padding: "11px 28px", fontWeight: 700, fontSize: 14, cursor: proposing ? "default" : "pointer", opacity: proposing ? 0.7 : 1 }}>
+                      style={{ background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "11px 28px", fontWeight: 700, fontSize: 14, cursor: proposing ? "default" : "pointer", opacity: proposing ? 0.7 : 1 }}>
                       {proposing ? "جاري الإرسال..." : "إرسال الاقتراح"}
                     </button>
                   </div>
@@ -689,7 +696,7 @@ export default function CompanyDashboard() {
                 <h2 style={{ fontSize: 20, fontWeight: 900, margin: 0 }}>المنتجات</h2>
                 <button
                   onClick={openAddProd}
-                  style={{ display: "flex", alignItems: "center", gap: 7, background: "#C4956A", color: "white", border: "none", borderRadius: 12, padding: "10px 20px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
+                  style={{ display: "flex", alignItems: "center", gap: 7, background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "9px 18px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
                 >
                   <Plus size={16} /> إضافة منتج
                 </button>
@@ -750,13 +757,13 @@ export default function CompanyDashboard() {
                     </ProdField>
                     {prodError && (
                       <div style={{ background: "#fee2e2", color: "#991b1b", borderRadius: 10, padding: "10px 14px", fontSize: 13, marginBottom: 8, textAlign: "right" }}>
-                        ⚠️ {prodError}
+                        {prodError}
                       </div>
                     )}
                     <button
                       onClick={handleSaveProd}
                       disabled={!prodForm.name.trim() || !prodForm.price || savingProd}
-                      style={{ width: "100%", background: "#C4956A", color: "white", border: "none", borderRadius: 12, padding: "12px 0", fontWeight: 700, fontSize: 14, cursor: "pointer", marginTop: 8, opacity: (!prodForm.name.trim() || !prodForm.price || savingProd) ? 0.5 : 1 }}
+                      style={{ width: "100%", background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "12px 0", fontWeight: 700, fontSize: 14, cursor: "pointer", marginTop: 8, opacity: (!prodForm.name.trim() || !prodForm.price || savingProd) ? 0.5 : 1 }}
                     >
                       {savingProd ? "جاري الحفظ..." : (editingProd ? "حفظ التعديلات" : "إضافة المنتج")}
                     </button>
@@ -783,7 +790,7 @@ export default function CompanyDashboard() {
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
                           <div style={{ textAlign: "right" }}>
                             <p style={{ fontWeight: 800, fontSize: 16, margin: 0 }}>{client.firstName} {client.lastName}</p>
-                            {client.phone && <p style={{ color: "#6b7280", fontSize: 13, margin: "3px 0 0" }}>📞 {client.phone}</p>}
+                            {client.phone && <p style={{ color: "#6b7280", fontSize: 13, margin: "3px 0 0" }}>{client.phone}</p>}
                           </div>
                           <span style={{ background: statusInfo.bg, color: statusInfo.color, fontSize: 12, fontWeight: 700, padding: "3px 12px", borderRadius: 999 }}>{statusInfo.label}</span>
                         </div>
@@ -803,8 +810,8 @@ export default function CompanyDashboard() {
                           </div>
                         )}
 
-                        <p style={{ fontSize: 13, color: "#6b7280", textAlign: "right", marginBottom: 12 }}>📍 {o.address}</p>
-                        {o.notes && <p style={{ fontSize: 13, color: "#6b7280", textAlign: "right", marginBottom: 12 }}>📝 {o.notes}</p>}
+                        <p style={{ fontSize: 13, color: "#6b7280", textAlign: "right", marginBottom: 12 }}>{o.address}</p>
+                        {o.notes && <p style={{ fontSize: 13, color: "#6b7280", textAlign: "right", marginBottom: 12 }}>{o.notes}</p>}
 
                         <div style={{ display: "flex", gap: 8, justifyContent: "flex-start", flexWrap: "wrap" }}>
                           {["confirmed","shipped","delivered","cancelled"].filter(s => s !== o.status).map(s => (
@@ -834,7 +841,7 @@ export default function CompanyDashboard() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
                 <h2 style={{ fontSize: 20, fontWeight: 900, margin: 0 }}>أعمالنا السابقة</h2>
                 <button onClick={openAddPort}
-                  style={{ display: "flex", alignItems: "center", gap: 7, background: "#C4956A", color: "white", border: "none", borderRadius: 12, padding: "10px 20px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
+                  style={{ display: "flex", alignItems: "center", gap: 7, background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "9px 18px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
                   <Plus size={15} /> إضافة عمل
                 </button>
               </div>
@@ -884,7 +891,7 @@ export default function CompanyDashboard() {
 
                   <div style={{ display: "flex", justifyContent: "flex-start" }}>
                     <button onClick={handleSavePort} disabled={savingPort}
-                      style={{ background: "linear-gradient(135deg,#A67C52,#C4956A)", color: "white", border: "none", borderRadius: 12, padding: "11px 28px", fontWeight: 700, fontSize: 14, cursor: savingPort ? "default" : "pointer", opacity: savingPort ? 0.7 : 1 }}>
+                      style={{ background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "11px 28px", fontWeight: 700, fontSize: 14, cursor: savingPort ? "default" : "pointer", opacity: savingPort ? 0.7 : 1 }}>
                       {savingPort ? "جاري الحفظ..." : editingPort ? "حفظ التعديلات" : "إضافة العمل"}
                     </button>
                   </div>
@@ -993,7 +1000,7 @@ export default function CompanyDashboard() {
                     </button>
                   ) : (
                     <span style={{ fontSize: 13, color: "#9ca3af", background: "#f9fafb", padding: "8px 14px", borderRadius: 10 }}>
-                      ⚠️ لم يُرفع ملف بعد
+                      لم يُرفع ملف بعد
                     </span>
                   )}
                   <label style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#f3f4f6", border: "1.5px dashed #e5e7eb", borderRadius: 10, padding: "8px 16px", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#374151" }}>
@@ -1003,6 +1010,12 @@ export default function CompanyDashboard() {
                 </div>
               </div>
 
+              <Field label="رقم الهاتف">
+                <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="05xxxxxxxx" style={inpStyle} dir="ltr" />
+              </Field>
+              <Field label="البريد الإلكتروني">
+                <input value={email} onChange={e => setEmail(e.target.value)} placeholder="example@email.com" style={inpStyle} dir="ltr" />
+              </Field>
               <Field label="وصف الشركة">
                 <textarea value={desc} onChange={e => setDesc(e.target.value)} rows={4} placeholder="اكتب وصفاً..." style={taStyle} />
               </Field>
@@ -1038,10 +1051,10 @@ export default function CompanyDashboard() {
               {profile && (
                 <div style={{ background: "#f9fafb", borderRadius: 14, padding: "16px 20px", marginTop: 20, marginBottom: 24 }}>
                   <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 10px", fontWeight: 600, textAlign: "right" }}>معلومات مسجّلة (لا تتغير)</p>
-                  <p style={{ fontSize: 14, color: "#374151", margin: "5px 0", textAlign: "right" }}>🏢 اسم الشركة: {profile.ownerName}</p>
+                  <p style={{ fontSize: 14, color: "#374151", margin: "5px 0", textAlign: "right" }}>اسم الشركة: {profile.ownerName}</p>
                   <p style={{ fontSize: 14, color: "#374151", margin: "5px 0", textAlign: "right" }}>📄 السجل التجاري: {profile.commercialRegistrationNumber}</p>
                   <p style={{ fontSize: 14, color: "#374151", margin: "5px 0", textAlign: "right" }}>
-                    ✅ الحالة:{" "}
+                    الحالة:{" "}
                     <span style={{ color: profile.approvalStatus === "approved" ? "#16a34a" : "#C4956A", fontWeight: 700 }}>
                       {profile.approvalStatus === "approved" ? "معتمد" : "قيد المراجعة"}
                     </span>
@@ -1052,10 +1065,10 @@ export default function CompanyDashboard() {
               <button
                 onClick={handleSaveProfile}
                 disabled={saving}
-                style={{ display: "flex", alignItems: "center", gap: 8, background: "#C4956A", color: "white", border: "none", borderRadius: 12, padding: "12px 28px", fontWeight: 700, fontSize: 15, cursor: "pointer", opacity: saving ? 0.6 : 1 }}
+                style={{ display: "flex", alignItems: "center", gap: 8, background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "12px 28px", fontWeight: 700, fontSize: 15, cursor: "pointer", opacity: saving ? 0.6 : 1 }}
               >
                 <Save size={16} />
-                {saving ? "جاري الحفظ..." : saved ? "✓ تم الحفظ" : "حفظ التغييرات"}
+                {saving ? "جاري الحفظ..." : saved ? "تم الحفظ" : "حفظ التغييرات"}
               </button>
             </div>
           )
@@ -1065,13 +1078,11 @@ export default function CompanyDashboard() {
           <>
           <div style={{ background: "white", borderRadius: 20, padding: 30, boxShadow: "0 4px 16px rgba(0,0,0,0.06)", marginTop: 20 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-              <div style={{ width: 38, height: 38, background: "#F0E4D0", borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", color: "#C4956A" }}>
-                🔒
-              </div>
+              <div style={{ width: 8, height: 8, background: "#C4956A", borderRadius: "50%" }}></div>
               <h2 style={{ fontSize: 17, fontWeight: 800, margin: 0, textAlign: "right" }}>تغيير كلمة المرور</h2>
             </div>
-            {pwErr && <div style={{ background: "#fee2e2", color: "#991b1b", borderRadius: 10, padding: "10px 14px", fontSize: 13, marginBottom: 14, textAlign: "right" }}>⚠️ {pwErr}</div>}
-            {pwOk  && <div style={{ background: "#dcfce7", color: "#166534", borderRadius: 10, padding: "10px 14px", fontSize: 13, marginBottom: 14, textAlign: "right" }}>✅ تم تغيير كلمة المرور بنجاح</div>}
+            {pwErr && <div style={{ background: "#fee2e2", color: "#991b1b", borderRadius: 10, padding: "10px 14px", fontSize: 13, marginBottom: 14, textAlign: "right" }}>{pwErr}</div>}
+            {pwOk  && <div style={{ background: "#dcfce7", color: "#166534", borderRadius: 10, padding: "10px 14px", fontSize: 13, marginBottom: 14, textAlign: "right" }}>تم تغيير كلمة المرور بنجاح</div>}
             {[
               { key: "currentPassword", label: "كلمة المرور الحالية" },
               { key: "newPassword",     label: "كلمة المرور الجديدة" },
@@ -1100,19 +1111,19 @@ export default function CompanyDashboard() {
           {/* طلب حذف الحساب */}
           <div style={{ background: "white", borderRadius: 20, padding: 30, boxShadow: "0 4px 16px rgba(0,0,0,0.06)", marginTop: 20, border: "1px solid #fee2e2" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-              <div style={{ width: 38, height: 38, background: "#fef2f2", borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", color: "#ef4444" }}>🗑️</div>
+              <div style={{ width: 8, height: 8, background: "#ef4444", borderRadius: "50%" }}></div>
               <h2 style={{ fontSize: 17, fontWeight: 800, margin: 0, textAlign: "right", color: "#ef4444" }}>طلب حذف الحساب</h2>
             </div>
             {(profile?.deleteRequested || deleteReqSent) ? (
               <div style={{ background: "#fef3c7", color: "#92400e", borderRadius: 12, padding: "14px 18px", textAlign: "right", fontSize: 14 }}>
-                ⏳ تم إرسال طلب الحذف — سيتم مراجعته من قبل الإدارة وسيتم التواصل معك قريباً.
+                تم إرسال طلب الحذف — سيتم مراجعته من قبل الإدارة وسيتم التواصل معك قريباً.
               </div>
             ) : (
               <>
                 <p style={{ fontSize: 13, color: "#6b7280", marginBottom: 14, textAlign: "right", lineHeight: 1.7 }}>
                   لا يمكن حذف حساب الشركة مباشرة لحماية بيانات العملاء. يمكنك إرسال طلب حذف وستراجعه الإدارة.
                 </p>
-                {deleteReqErr && <div style={{ background: "#fee2e2", color: "#991b1b", borderRadius: 10, padding: "10px 14px", fontSize: 13, marginBottom: 12, textAlign: "right" }}>⚠️ {deleteReqErr}</div>}
+                {deleteReqErr && <div style={{ background: "#fee2e2", color: "#991b1b", borderRadius: 10, padding: "10px 14px", fontSize: 13, marginBottom: 12, textAlign: "right" }}>{deleteReqErr}</div>}
                 <div style={{ marginBottom: 14 }}>
                   <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6, textAlign: "right" }}>سبب طلب الحذف (اختياري)</label>
                   <textarea
@@ -1150,16 +1161,20 @@ function ProjectMiniCard({ proj, onClick }) {
     <div
       onClick={onClick}
       style={{
-        background: "white", borderRadius: 20, padding: "20px 22px",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.06)", cursor: "pointer",
-        transition: "transform 0.2s, box-shadow 0.2s", border: "1px solid rgba(0,0,0,0.04)",
+        background: "white", borderRadius: 12, padding: "18px 20px",
+        cursor: "pointer", border: "1px solid #EDE3D8",
         display: "flex", flexDirection: "column", gap: 12,
+        transition: "border-color 0.15s",
       }}
-      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 28px rgba(0,0,0,0.1)"; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.06)"; }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = "#1B3A2D"; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = "#EDE3D8"; }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 6 }}>
+        <div style={{ textAlign: "right" }}>
+          <p style={{ fontWeight: 900, fontSize: 16, margin: 0, color: "#111827" }}>{proj.type}</p>
+          {client && <p style={{ color: "#6b7280", fontSize: 12, margin: "3px 0 0" }}>{client.firstName} {client.lastName}</p>}
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
           <span style={{ background: st.bg, color: st.color, fontSize: 11, fontWeight: 700, padding: "3px 11px", borderRadius: 999, border: `1px solid ${st.color}22` }}>{st.label}</span>
           {proj.unreadByCompany && (
             <div style={{ display: "flex", alignItems: "center", gap: 4, background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 999, padding: "2px 9px" }}>
@@ -1168,13 +1183,9 @@ function ProjectMiniCard({ proj, onClick }) {
             </div>
           )}
         </div>
-        <div style={{ textAlign: "right" }}>
-          <p style={{ fontWeight: 900, fontSize: 16, margin: 0, color: "#111827" }}>{proj.type}</p>
-          {client && <p style={{ color: "#6b7280", fontSize: 12, margin: "3px 0 0" }}>👤 {client.firstName} {client.lastName}</p>}
-        </div>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 5, justifyContent: "flex-end", color: "#9ca3af", fontSize: 12 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 5, justifyContent: "flex-start", color: "#9ca3af", fontSize: 12 }}>
         <span>{proj.location}</span>
         <MapPin size={12} color="#C4956A" />
       </div>
@@ -1182,10 +1193,10 @@ function ProjectMiniCard({ proj, onClick }) {
       <div>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 6 }}>
           <span style={{ color: "#9ca3af" }}>{donePhases}/{proj.phases?.length} مراحل</span>
-          <span style={{ fontWeight: 800, color: progress === 100 ? "#22c55e" : "#C4956A" }}>{progress}%</span>
+          <span style={{ fontWeight: 800, color: progress === 100 ? "#16a34a" : "#22c55e" }}>{progress}%</span>
         </div>
-        <div style={{ height: 7, background: "#f3f4f6", borderRadius: 999, overflow: "hidden" }}>
-          <div style={{ height: "100%", width: `${progress}%`, background: progress === 100 ? "linear-gradient(90deg,#22c55e,#16a34a)" : "linear-gradient(90deg,#A67C52,#C4956A)", borderRadius: 999 }} />
+        <div style={{ height: 7, background: "#e5e7eb", borderRadius: 999, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${progress}%`, background: progress === 100 ? "#16a34a" : "#22c55e", borderRadius: 999, boxShadow: progress > 0 ? "0 0 8px rgba(34,197,94,0.45)" : "none" }} />
         </div>
       </div>
     </div>
@@ -1203,27 +1214,35 @@ function ProjectEditor({ proj, onBack, onPhaseClick, updateText, setUpdateText, 
     <div>
       <button
         onClick={onBack}
-        style={{ display: "flex", alignItems: "center", gap: 8, background: "white", border: "1px solid #e5e7eb", borderRadius: 12, padding: "9px 18px", fontSize: 14, fontWeight: 700, cursor: "pointer", marginBottom: 22, color: "#374151", boxShadow: "0 2px 8px rgba(0,0,0,0.05)", transition: "box-shadow 0.15s" }}
-        onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,0,0,0.1)"}
-        onMouseLeave={e => e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.05)"}
+        style={{ display: "flex", alignItems: "center", gap: 8, background: "white", border: "1px solid #e5e7eb", borderRadius: 8, padding: "9px 18px", fontSize: 14, fontWeight: 700, cursor: "pointer", marginBottom: 22, color: "#374151" }}
       >
-        <span style={{ fontSize: 16 }}>→</span> العودة للمشاريع
+        العودة للمشاريع <span style={{ fontSize: 16 }}>←</span>
       </button>
 
       {/* بطاقة الملخص */}
-      <div style={{ background: "white", borderRadius: 22, overflow: "hidden", marginBottom: 18, boxShadow: "0 4px 18px rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.04)" }}>
-        <div style={{ background: "linear-gradient(135deg,#fff8f2,#fef3e8)", padding: "22px 24px 18px", borderBottom: "1px solid #f0e8df" }}>
+      <div style={{ background: "white", borderRadius: 12, overflow: "hidden", marginBottom: 18, border: "1px solid #EDE3D8" }}>
+        <div style={{ background: "#FAF7F0", padding: "22px 24px 18px", borderBottom: "1px solid #EDE3D8" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div style={{ textAlign: "right" }}>
+              <h2 style={{ fontSize: 22, fontWeight: 900, margin: 0, color: "#111827" }}>{proj.type}</h2>
+              {client && (
+                <p style={{ color: "#6b7280", fontSize: 13, margin: "5px 0 0", display: "flex", alignItems: "center", gap: 6, justifyContent: "flex-start" }}>
+                  <User size={13} color="#1B3A2D" />
+                  <span>{client.firstName} {client.lastName}</span>
+                  {client.phone && <span style={{ background: "#f3f4f6", padding: "2px 8px", borderRadius: 6 }}>{client.phone}</span>}
+                </p>
+              )}
+            </div>
             <div style={{ display: "flex", gap: 8 }}>
               {["active","completed","paused"].map(s => (
                 <button
                   key={s}
                   onClick={() => onStatusChange(s)}
                   style={{
-                    fontSize: 12, fontWeight: 700, padding: "5px 14px", borderRadius: 999,
-                    border: `1.5px solid ${proj.status === s ? PROJ_STATUS[s].color + "44" : "transparent"}`,
+                    fontSize: 12, fontWeight: 700, padding: "5px 14px", borderRadius: 8,
+                    border: `1.5px solid ${proj.status === s ? PROJ_STATUS[s].color + "44" : "#e5e7eb"}`,
                     cursor: "pointer", transition: "all 0.15s",
-                    background: proj.status === s ? PROJ_STATUS[s].bg : "#f3f4f6",
+                    background: proj.status === s ? PROJ_STATUS[s].bg : "white",
                     color:      proj.status === s ? PROJ_STATUS[s].color : "#9ca3af",
                   }}
                 >
@@ -1231,64 +1250,55 @@ function ProjectEditor({ proj, onBack, onPhaseClick, updateText, setUpdateText, 
                 </button>
               ))}
             </div>
-            <div style={{ textAlign: "right" }}>
-              <h2 style={{ fontSize: 22, fontWeight: 900, margin: 0, color: "#111827" }}>{proj.type}</h2>
-              {client && (
-                <p style={{ color: "#6b7280", fontSize: 13, margin: "5px 0 0", display: "flex", alignItems: "center", gap: 6, justifyContent: "flex-end" }}>
-                  {client.phone && <span style={{ background: "#f3f4f6", padding: "2px 8px", borderRadius: 6 }}>📞 {client.phone}</span>}
-                  <span>{client.firstName} {client.lastName}</span>
-                  <User size={13} color="#C4956A" />
-                </p>
-              )}
-            </div>
           </div>
         </div>
         <div style={{ padding: "16px 24px 20px" }}>
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 16, fontSize: 13, color: "#6b7280", marginBottom: 14 }}>
+          <div style={{ display: "flex", justifyContent: "flex-start", gap: 16, fontSize: 13, color: "#6b7280", marginBottom: 14 }}>
             <span style={{ display: "flex", alignItems: "center", gap: 5 }}>{proj.location}<MapPin size={13} color="#C4956A" /></span>
-            {proj.budget && <span>💰 {proj.budget}</span>}
+            {proj.budget && <span>{proj.budget}</span>}
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <div style={{ fontSize: 12, color: "#9ca3af" }}>{donePhases}/{proj.phases?.length} مراحل مكتملة</div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 3 }}>
-              <span style={{ fontSize: 26, fontWeight: 900, color: progress === 100 ? "#22c55e" : "#C4956A", lineHeight: 1 }}>{progress}</span>
+              <span style={{ fontSize: 26, fontWeight: 900, color: progress === 100 ? "#16a34a" : "#22c55e", lineHeight: 1 }}>{progress}</span>
               <span style={{ fontSize: 13, color: "#9ca3af" }}>% إنجاز</span>
             </div>
+            <div style={{ fontSize: 12, color: "#9ca3af" }}>{donePhases}/{proj.phases?.length} مراحل مكتملة</div>
           </div>
-          <div style={{ height: 10, background: "#f3f4f6", borderRadius: 999, overflow: "hidden" }}>
-            <div style={{ height: "100%", width: `${progress}%`, background: progress === 100 ? "linear-gradient(90deg,#22c55e,#16a34a)" : "linear-gradient(90deg,#A67C52,#C4956A)", borderRadius: 999, transition: "width 0.4s" }} />
+          <div style={{ height: 10, background: "#e5e7eb", borderRadius: 999, overflow: "hidden" }}>
+            <div style={{ height: "100%", width: `${progress}%`, background: progress === 100 ? "#16a34a" : "#22c55e", borderRadius: 999, transition: "width 0.6s ease", boxShadow: `0 0 10px rgba(34,197,94,${progress > 0 ? 0.55 : 0}), 0 0 4px rgba(34,197,94,${progress > 0 ? 0.3 : 0})` }} />
           </div>
         </div>
       </div>
 
       {/* مراحل المشروع */}
-      <DashCard title="مراحل المشروع" hint="اضغط على الشريط لتحديث النسبة" emoji="🏗️">
+      <DashCard title="مراحل المشروع">
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {proj.phases.map((phase, i) => (
             <div key={i} style={{
               background: phase.progress === 100 ? "#f0fdf4" : phase.progress > 0 ? "#fff8f3" : "#fafafa",
-              border: `1px solid ${phase.progress === 100 ? "#bbf7d0" : phase.progress > 0 ? "#fde8d0" : "#f0f0f0"}`,
-              borderRadius: 14, padding: "12px 14px",
+              border: `1px solid ${phase.progress === 100 ? "#bbf7d0" : phase.progress > 0 ? "#EDE3D8" : "#f0f0f0"}`,
+              borderRadius: 12, padding: "12px 14px",
             }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <span style={{ fontSize: 12, fontWeight: 800, color: phase.progress === 100 ? "#22c55e" : phase.progress > 0 ? "#C4956A" : "#9ca3af" }}>
-                  {phase.progress === 100 ? "✓" : `${phase.progress}%`}
-                </span>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  <span style={{ fontSize: 14 }}>{PHASE_ICONS[i]}</span>
                   <span style={{ fontSize: 12, fontWeight: 700, color: "#374151" }}>{phase.name}</span>
-                  <span style={{ fontSize: 16 }}>{PHASE_ICONS[i]}</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={phase.progress}
+                    onChange={e => onPhaseClick(i, Math.max(0, Math.min(100, Number(e.target.value) || 0)))}
+                    onClick={e => e.stopPropagation()}
+                    style={{ width: 52, border: `1px solid ${phase.progress > 0 ? "#86efac" : "#e5e7eb"}`, borderRadius: 6, padding: "3px 6px", fontSize: 12, fontWeight: 800, textAlign: "center", outline: "none", color: phase.progress === 100 ? "#16a34a" : phase.progress > 0 ? "#22c55e" : "#9ca3af", background: "white", fontFamily: "inherit" }}
+                  />
+                  <span style={{ fontSize: 11, color: "#9ca3af" }}>%</span>
                 </div>
               </div>
-              <div
-                style={{ height: 8, background: "#e5e7eb", borderRadius: 999, overflow: "hidden", cursor: "pointer" }}
-                onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const pct  = Math.round(((e.clientX - rect.left) / rect.width) * 100);
-                  onPhaseClick(i, Math.max(0, Math.min(100, pct)));
-                }}
-                title="اضغط لتحديث النسبة"
-              >
-                <div style={{ height: "100%", width: `${phase.progress}%`, background: phase.progress === 100 ? "#22c55e" : "#C4956A", borderRadius: 999, transition: "width 0.3s" }} />
+              <div style={{ height: 7, background: "#e5e7eb", borderRadius: 999, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${phase.progress}%`, background: phase.progress === 100 ? "#16a34a" : "#22c55e", borderRadius: 999, transition: "width 0.4s ease", boxShadow: phase.progress > 0 ? "0 0 8px rgba(34,197,94,0.5)" : "none" }} />
               </div>
             </div>
           ))}
@@ -1296,31 +1306,31 @@ function ProjectEditor({ proj, onBack, onPhaseClick, updateText, setUpdateText, 
       </DashCard>
 
       {/* التحديثات للعميل */}
-      <DashCard title="التحديثات للعميل" emoji="📢"
+      <DashCard title="التحديثات للعميل"
         action={
           <button
             onClick={() => setShowUpdForm(!showUpdForm)}
-            style={{ display: "flex", alignItems: "center", gap: 6, background: showUpdForm ? "#f3f4f6" : "#C4956A", color: showUpdForm ? "#374151" : "white", border: "none", borderRadius: 10, padding: "8px 16px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
+            style={{ display: "flex", alignItems: "center", gap: 6, background: showUpdForm ? "#f3f4f6" : "#1B3A2D", color: showUpdForm ? "#374151" : "white", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
           >
             <Plus size={14} /> {showUpdForm ? "إلغاء" : "إضافة تحديث"}
           </button>
         }
       >
         {showUpdForm && (
-          <div style={{ background: "#fff8f3", borderRadius: 14, padding: 16, marginBottom: 14, border: "1px solid #fde8d0" }}>
+          <div style={{ background: "#fafafa", borderRadius: 10, padding: 14, marginBottom: 14, border: "1px solid #e5e7eb" }}>
             <textarea
               value={updateText}
               onChange={e => setUpdateText(e.target.value)}
               rows={3}
               placeholder="اكتب تحديثاً يراه العميل..."
-              style={{ width: "100%", border: "1.5px solid #fcd4a8", borderRadius: 10, padding: "10px 14px", fontSize: 14, outline: "none", textAlign: "right", resize: "none", fontFamily: "inherit", boxSizing: "border-box", background: "white", color: "#111827" }}
+              style={{ width: "100%", border: "1.5px solid #e5e7eb", borderRadius: 8, padding: "10px 14px", fontSize: 14, outline: "none", textAlign: "right", resize: "none", fontFamily: "inherit", boxSizing: "border-box", background: "white", color: "#111827" }}
             />
             <div style={{ display: "flex", gap: 8, marginTop: 10, justifyContent: "flex-end" }}>
               <button onClick={() => setShowUpdForm(false)} style={{ background: "#f3f4f6", color: "#374151", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 13, cursor: "pointer", fontWeight: 600 }}>إلغاء</button>
               <button
                 onClick={() => { onAddUpdate(); setShowUpdForm(false); }}
                 disabled={addingUpd || !updateText.trim()}
-                style={{ background: "#C4956A", color: "white", border: "none", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", opacity: addingUpd || !updateText.trim() ? 0.5 : 1 }}
+                style={{ background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", opacity: addingUpd || !updateText.trim() ? 0.5 : 1 }}
               >
                 {addingUpd ? "جاري الحفظ..." : "نشر التحديث"}
               </button>
@@ -1342,12 +1352,12 @@ function ProjectEditor({ proj, onBack, onPhaseClick, updateText, setUpdateText, 
             ))}
           </div>
         ) : (
-          <DashEmpty icon="💬" text="لم تضف أي تحديثات بعد" />
+          <DashEmpty text="لم تضف أي تحديثات بعد" />
         )}
       </DashCard>
 
       {/* ملاحظات العميل */}
-      <DashCard title="ملاحظات العميل" emoji="📝">
+      <DashCard title="ملاحظات العميل">
         {proj.clientNotes?.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {proj.clientNotes.map((n, i) => (
@@ -1360,7 +1370,7 @@ function ProjectEditor({ proj, onBack, onPhaseClick, updateText, setUpdateText, 
             ))}
           </div>
         ) : (
-          <DashEmpty icon="🗒️" text="لا توجد ملاحظات من العميل بعد" />
+          <DashEmpty text="لا توجد ملاحظات من العميل بعد" />
         )}
       </DashCard>
     </div>
@@ -1369,16 +1379,13 @@ function ProjectEditor({ proj, onBack, onPhaseClick, updateText, setUpdateText, 
 
 function DashCard({ title, emoji, hint, action, children }) {
   return (
-    <div style={{ background: "white", borderRadius: 22, overflow: "hidden", marginBottom: 18, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.04)" }}>
-      <div style={{ padding: "16px 22px 14px", borderBottom: "1px solid #f7f7f7", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+    <div style={{ background: "white", borderRadius: 12, overflow: "hidden", marginBottom: 14, border: "1px solid #EDE3D8" }}>
+      <div style={{ padding: "14px 20px 12px", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <h3 style={{ fontSize: 15, fontWeight: 800, margin: 0, color: "#111827" }}>
+          {title}
+          {hint && <span style={{ fontSize: 11, color: "#c4cad4", fontWeight: 400, marginRight: 8 }}>({hint})</span>}
+        </h3>
         {action || <div />}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <h3 style={{ fontSize: 16, fontWeight: 800, margin: 0, color: "#111827" }}>
-            {title}
-            {hint && <span style={{ fontSize: 11, color: "#c4cad4", fontWeight: 400, marginRight: 8 }}>({hint})</span>}
-          </h3>
-          <div style={{ width: 30, height: 30, background: "#F0E4D0", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}>{emoji}</div>
-        </div>
       </div>
       <div style={{ padding: "16px 22px 20px" }}>{children}</div>
     </div>
@@ -1388,7 +1395,6 @@ function DashCard({ title, emoji, hint, action, children }) {
 function DashEmpty({ icon, text }) {
   return (
     <div style={{ textAlign: "center", padding: "22px 0", color: "#c4cad4" }}>
-      <p style={{ fontSize: 26, margin: "0 0 8px" }}>{icon}</p>
       <p style={{ fontSize: 13 }}>{text}</p>
     </div>
   );
@@ -1402,10 +1408,9 @@ function RequestCard({ req, onAccept, onReject, onCreateProject }) {
 
   return (
     <div style={{
-      background: "white", borderRadius: 20, overflow: "hidden",
-      boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.04)",
+      background: "white", borderRadius: 12, overflow: "hidden", border: "1px solid #EDE3D8",
     }}>
-      <div style={{ background: req.status === "accepted" ? "#f0fdf4" : req.status === "rejected" ? "#fef2f2" : "linear-gradient(135deg,#fff8f2,#fef3e8)", padding: "18px 24px 14px", borderBottom: "1px solid #f7f7f7" }}>
+      <div style={{ background: req.status === "accepted" ? "#f0fdf4" : req.status === "rejected" ? "#fef2f2" : "#FAF7F0", padding: "18px 24px 14px", borderBottom: "1px solid #EDE3D8" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
           <div style={{ textAlign: "right" }}>
             <p style={{ fontWeight: 900, fontSize: 18, margin: 0, color: "#111827" }}>{req.projectType}</p>
@@ -1429,7 +1434,7 @@ function RequestCard({ req, onAccept, onReject, onCreateProject }) {
           </span>
           {req.budget && (
             <span style={{ fontSize: 13, color: "#374151", background: "#f9fafb", padding: "5px 12px", borderRadius: 8, border: "1px solid #f0f0f0" }}>
-              {req.budget} 💰
+              {req.budget}
             </span>
           )}
         </div>
@@ -1450,7 +1455,7 @@ function RequestCard({ req, onAccept, onReject, onCreateProject }) {
             </button>
             <button
               onClick={onAccept}
-              style={{ display: "flex", alignItems: "center", gap: 6, background: "linear-gradient(135deg,#22c55e,#16a34a)", color: "white", border: "none", borderRadius: 12, padding: "10px 20px", fontWeight: 700, fontSize: 13, cursor: "pointer", boxShadow: "0 4px 12px rgba(34,197,94,0.3)" }}
+              style={{ display: "flex", alignItems: "center", gap: 6, background: "#16a34a", color: "white", border: "none", borderRadius: 8, padding: "10px 20px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}
             >
               <CheckCircle size={15} /> قبول الطلب
             </button>
@@ -1477,11 +1482,10 @@ function RequestCard({ req, onAccept, onReject, onCreateProject }) {
         )}
 
         {req.status === "accepted" && (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <p style={{ color: "#16a34a", fontSize: 13, fontWeight: 700, margin: 0 }}>مقبول — المشروع جاهز ✅</p>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <button
               onClick={onCreateProject}
-              style={{ fontSize: 13, color: "white", background: "#C4956A", border: "none", borderRadius: 10, padding: "8px 18px", cursor: "pointer", fontWeight: 700 }}
+              style={{ fontSize: 13, color: "white", background: "#1B3A2D", border: "none", borderRadius: 8, padding: "8px 18px", cursor: "pointer", fontWeight: 700 }}
             >
               اعرض المشروع
             </button>
@@ -1497,15 +1501,13 @@ function TabBtn({ active, onClick, icon, label }) {
     <button
       onClick={onClick}
       style={{
-        display: "flex", alignItems: "center", gap: 6,
-        padding: "8px 14px", borderRadius: 10, border: "none", cursor: "pointer",
+        padding: "7px 14px", borderRadius: 8, border: "none", cursor: "pointer",
         fontSize: 13, fontWeight: 700, transition: "all 0.15s",
         background: active ? "white" : "transparent",
-        color: active ? "#C4956A" : "#6b7280",
-        boxShadow: active ? "0 2px 8px rgba(0,0,0,0.1)" : "none",
+        color: active ? "#1B3A2D" : "#6b7280",
       }}
     >
-      {icon} {label}
+      {label}
     </button>
   );
 }
@@ -1521,9 +1523,8 @@ function Field({ label, children }) {
 
 function EmptyState({ icon, text }) {
   return (
-    <div style={{ textAlign: "center", padding: "70px 20px", color: "#9ca3af" }}>
-      <div style={{ margin: "0 auto 16px", opacity: 0.3 }}>{icon}</div>
-      <p style={{ fontSize: 15 }}>{text}</p>
+    <div style={{ textAlign: "center", padding: "64px 20px" }}>
+      <p style={{ fontSize: 15, color: "#9ca3af", margin: 0 }}>{text}</p>
     </div>
   );
 }
@@ -1544,15 +1545,17 @@ function MeetingCard({ meeting, onAction }) {
   }[meeting.status] || { bg: "#f3f4f6", color: "#6b7280", label: meeting.status };
 
   return (
-    <div style={{ background: "white", borderRadius: 20, overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+    <div style={{ background: "white", borderRadius: 12, overflow: "hidden", border: "1px solid #EDE3D8" }}>
       <div style={{ padding: "18px 22px 14px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
         <div style={{ textAlign: "right" }}>
-          <p style={{ fontSize: 16, fontWeight: 800, color: "#111827", margin: "0 0 4px" }}>{meeting.topic}</p>
-          <p style={{ fontSize: 12, color: "#9ca3af", margin: 0 }}>
-            📅 {meeting.proposedDate} &nbsp; 🕐 {meeting.proposedTime}
-          </p>
-          <p style={{ fontSize: 12, color: "#C4956A", fontWeight: 600, margin: "4px 0 0" }}>
-            👤 {client.firstName} {client.lastName}
+          <p style={{ fontSize: 16, fontWeight: 800, color: "#111827", margin: "0 0 6px" }}>{meeting.topic}</p>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 12, color: "#6b7280", marginBottom: 4 }}>
+            <span>{meeting.proposedTime}</span>
+            <span style={{ color: "#d1d5db" }}>·</span>
+            <span>{meeting.proposedDate ? new Date(meeting.proposedDate).toLocaleDateString("ar-SA", { day: "numeric", month: "long" }) : ""}</span>
+          </div>
+          <p style={{ fontSize: 12, color: "#374151", fontWeight: 600, margin: "4px 0 0" }}>
+            {client.firstName} {client.lastName}
             {client.phone && <span style={{ color: "#9ca3af", fontWeight: 400, marginRight: 6 }}>— {client.phone}</span>}
           </p>
           {meeting.meetLink && (
@@ -1579,8 +1582,8 @@ function MeetingCard({ meeting, onAction }) {
                 ✕ رفض
               </button>
               <button onClick={() => { setOpen("confirm"); }}
-                style={{ flex: 1, background: "linear-gradient(135deg,#22c55e,#16a34a)", color: "white", border: "none", borderRadius: 12, padding: "9px 0", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
-                ✓ تأكيد
+                style={{ flex: 1, background: "#16a34a", color: "white", border: "none", borderRadius: 8, padding: "9px 0", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+                تأكيد
               </button>
             </div>
           ) : open === "confirm" ? (
@@ -1588,13 +1591,13 @@ function MeetingCard({ meeting, onAction }) {
               <input value={link} onChange={e => { setLink(e.target.value); setLinkErr(false); }}
                 placeholder="رابط الاجتماع (إلزامي)"
                 style={{ width: "100%", border: `1.5px solid ${linkErr ? "#fca5a5" : "#bbf7d0"}`, borderRadius: 10, padding: "9px 14px", fontSize: 13, outline: "none", marginBottom: linkErr ? 4 : 10, textAlign: "right", fontFamily: "inherit", boxSizing: "border-box", background: "white" }} />
-              {linkErr && <p style={{ fontSize: 12, color: "#ef4444", margin: "0 0 10px", textAlign: "right" }}>رابط الاجتماع مطلوب</p>}
+              {linkErr && <p style={{ fontSize: 12, color: "#ef4444", margin: "0 0 10px", textAlign: "right" }}>يجب أن يكون رابطاً صحيحاً (https://...)</p>}
               <input value={note} onChange={e => setNote(e.target.value)} placeholder="ملاحظة للعميل (اختياري)"
                 style={{ width: "100%", border: "1.5px solid #bbf7d0", borderRadius: 10, padding: "9px 14px", fontSize: 13, outline: "none", marginBottom: 10, textAlign: "right", fontFamily: "inherit", boxSizing: "border-box", background: "white" }} />
               <div style={{ display: "flex", gap: 8 }}>
                 <button onClick={() => { setOpen(false); setLinkErr(false); }} style={{ background: "white", color: "#374151", border: "1px solid #e5e7eb", borderRadius: 10, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>إلغاء</button>
-                <button onClick={() => { if (!link.trim()) { setLinkErr(true); return; } onAction(meeting.id, "confirmed", note, link); }}
-                  style={{ flex: 1, background: "linear-gradient(135deg,#22c55e,#16a34a)", color: "white", border: "none", borderRadius: 10, padding: "9px 0", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+                <button onClick={() => { if (!link.trim() || !/^https?:\/\/.+\..+/.test(link.trim())) { setLinkErr(true); return; } onAction(meeting.id, "confirmed", note, link); }}
+                  style={{ flex: 1, background: "#16a34a", color: "white", border: "none", borderRadius: 8, padding: "9px 0", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
                   تأكيد الاجتماع
                 </button>
               </div>
@@ -1618,7 +1621,7 @@ function MeetingCard({ meeting, onAction }) {
       {!isPending && meeting.companyNote && (
         <div style={{ padding: "0 22px 16px" }}>
           <p style={{ fontSize: 12, color: "#6b7280", background: "#f9fafb", borderRadius: 10, padding: "8px 12px", margin: 0, textAlign: "right" }}>
-            💬 {meeting.companyNote}
+            {meeting.companyNote}
           </p>
         </div>
       )}

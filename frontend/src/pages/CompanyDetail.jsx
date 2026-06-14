@@ -12,11 +12,11 @@ const TYPE_LABEL = {
   materials_supplier:   "مورد مواد بناء"
 };
 const COVERS = {
-  full_construction:    "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80",
-  partial_construction: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1200&q=80",
-  materials_supplier:   "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80",
+  full_construction:    "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&q=80",
+  partial_construction: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80",
+  materials_supplier:   "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1200&q=80",
 };
-const FALLBACK  = "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80";
+const FALLBACK  = "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&q=80";
 const PROJ_TYPES = ["فيلا", "شقة", "عمارة", "مجمع سكني", "مبنى تجاري"];
 const CATEGORIES = ["الكل", "اسمنت", "حديد", "خشب", "بلاط", "دهانات", "كهربائيات", "سباكة", "عزل", "رخام"];
 function bcLink(type) {
@@ -97,7 +97,6 @@ export default function CompanyDetail() {
   if (loading) return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#FAF7F0" }}>
       <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 44, marginBottom: 12 }}>🏗️</div>
         <p style={{ color: "#9ca3af", fontSize: 15 }}>جاري التحميل...</p>
       </div>
     </div>
@@ -176,9 +175,9 @@ export default function CompanyDetail() {
         body: JSON.stringify({ companyId: id, rating: myRating, comment: myComment || null })
       });
       const d = await res.json();
-      if (res.status === 409) { setReviewMsg("قيّمت هذه الشركة مسبقاً ✓"); return; }
+      if (res.status === 409) { setReviewMsg("قيّمت هذه الشركة مسبقاً"); return; }
       if (!res.ok)            { setReviewMsg(d.message || "حدث خطأ"); return; }
-      setReviewMsg("تم إرسال تقييمك! شكراً 🌟");
+      setReviewMsg("تم إرسال تقييمك، شكراً");
       setMyRating(0); setMyComment("");
       const rr = await fetch(`/api/reviews/company/${id}`);
       const rd = await rr.json();
@@ -272,9 +271,8 @@ export default function CompanyDetail() {
           </div>
           {}
           {filteredProds.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px 0", color: "#9ca3af", background: "white", borderRadius: 20 }}>
-              <Package size={48} style={{ margin: "0 auto 16px", opacity: 0.2 }} />
-              <p style={{ fontSize: 15, fontWeight: 600 }}>{prodSearch ? `لا توجد نتائج لـ "${prodSearch}"` : "لا توجد منتجات في هذه الفئة"}</p>
+            <div style={{ textAlign: "center", padding: "60px 0" }}>
+              <p style={{ fontSize: 15, fontWeight: 600, color: "#9ca3af" }}>{prodSearch ? `لا توجد نتائج لـ "${prodSearch}"` : "لا توجد منتجات في هذه الفئة"}</p>
             </div>
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
@@ -303,15 +301,13 @@ export default function CompanyDetail() {
             onClick={() => setShowOrder(true)}
             style={{
               position: "fixed", bottom: 28, left: 28,
-              width: 64, height: 64, borderRadius: "50%",
-              background: "linear-gradient(135deg,#A67C52,#C4956A)",
+              width: 60, height: 60, borderRadius: "50%",
+              background: "#C4956A",
               color: "white", border: "none", cursor: "pointer",
-              boxShadow: "0 6px 24px rgba(196,149,106,0.55)",
+              boxShadow: "0 4px 16px rgba(196,149,106,0.35)",
               display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-              zIndex: 999, transition: "transform 0.2s",
+              zIndex: 999,
             }}
-            onMouseEnter={e => e.currentTarget.style.transform = "scale(1.1)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
           >
             <ShoppingCart size={22} />
             <span style={{ fontSize: 11, fontWeight: 800, marginTop: 2 }}>{cartCount}</span>
@@ -365,7 +361,7 @@ export default function CompanyDetail() {
         </div>
         {}
         {company.description && (
-          <InfoCard title="عن الشركة" icon="🏢" mb={14}>
+          <InfoCard title="عن الشركة" mb={14}>
             <p style={{ fontSize: 14, color: "#4b5563", lineHeight: 2, margin: 0 }}>{company.description}</p>
           </InfoCard>
         )}
@@ -381,29 +377,29 @@ export default function CompanyDetail() {
         )}
         {}
         {portfolio.length > 0 && (
-          <InfoCard title="أعمالنا السابقة" icon="🏗️" mb={14}>
+          <InfoCard title="أعمالنا السابقة" mb={14}>
             <PortfolioGrid items={portfolio} />
           </InfoCard>
         )}
         {}
-        <InfoCard title="التواصل" icon="📞" mb={14}>
+        <InfoCard title="التواصل" mb={14}>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {cu.phone && (
               <a href={`tel:${cu.phone}`} style={contactRow}>
+                <div style={iconBox}><Phone size={16} color="#1B3A2D" /></div>
                 <div style={{ flex: 1, textAlign: "right" }}>
                   <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: "#111827" }}>{cu.phone}</p>
                   <p style={{ margin: 0, fontSize: 12, color: "#9ca3af" }}>اتصال مباشر</p>
                 </div>
-                <div style={{ ...iconBox, background: "#C4956A" }}><Phone size={16} color="white" /></div>
               </a>
             )}
             {cu.email && (
               <a href={`mailto:${cu.email}`} style={contactRow}>
+                <div style={iconBox}><Mail size={16} color="#1B3A2D" /></div>
                 <div style={{ flex: 1, textAlign: "right" }}>
                   <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: "#111827" }}>{cu.email}</p>
                   <p style={{ margin: 0, fontSize: 12, color: "#9ca3af" }}>البريد الإلكتروني</p>
                 </div>
-                <div style={{ ...iconBox, background: "#6366f1" }}><Mail size={16} color="white" /></div>
               </a>
             )}
           </div>
@@ -412,19 +408,17 @@ export default function CompanyDetail() {
         {token && user?.role === "client" ? (
           <button
             onClick={() => setShowReq(true)}
-            style={{ width: "100%", background: "linear-gradient(135deg,#A67C52,#C4956A)", color: "white", border: "none", borderRadius: 16, padding: "17px 0", fontWeight: 900, fontSize: 16, cursor: "pointer", boxShadow: "0 8px 22px rgba(196,149,106,0.42)", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 18, transition: "transform 0.15s" }}
-            onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-            onMouseLeave={e => e.currentTarget.style.transform = ""}
+            style={{ width: "100%", background: "#1B3A2D", color: "white", border: "none", borderRadius: 10, padding: "16px 0", fontWeight: 800, fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 18 }}
           >
             <Send size={18} /> أرسل طلبك لهذه الشركة
           </button>
         ) : !token ? (
-          <Link to="/login" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, background: "linear-gradient(135deg,#A67C52,#C4956A)", color: "white", borderRadius: 16, padding: "17px 0", fontWeight: 900, fontSize: 16, textDecoration: "none", boxShadow: "0 8px 22px rgba(196,149,106,0.42)", marginBottom: 18 }}>
+          <Link to="/login" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, background: "#1B3A2D", color: "white", borderRadius: 10, padding: "16px 0", fontWeight: 800, fontSize: 15, textDecoration: "none", marginBottom: 18 }}>
             <Send size={18} /> سجّل دخولك لإرسال طلب
           </Link>
         ) : null}
         {}
-        <InfoCard title="التقييمات" icon="⭐" titleExtra={reviews.length > 0 && <span style={{ fontSize: 12, color: "#9ca3af" }}>({reviews.length})</span>}>
+        <InfoCard title="التقييمات" titleExtra={reviews.length > 0 && <span style={{ fontSize: 12, color: "#9ca3af" }}>({reviews.length})</span>}>
           <ReviewSection reviews={sortedReviews} sortRev={sortRev} setSortRev={setSortRev} myRating={myRating} setMyRating={setMyRating} myComment={myComment} setMyComment={setMyComment} handleReview={handleReview} reviewing={reviewing} reviewMsg={reviewMsg} showForm={!!(token && user?.role === "client")} />
         </InfoCard>
       </div>
@@ -435,7 +429,7 @@ export default function CompanyDetail() {
 }
 function ProductCard({ product: p, qty, onAdd, onRemove, isClient, isFav, onToggleFav }) {
   return (
-    <div style={{ background: "white", borderRadius: 18, overflow: "hidden", boxShadow: "0 2px 10px rgba(0,0,0,0.05)", border: "1px solid #f0e8df", display: "flex", flexDirection: "column", transition: "box-shadow 0.2s" }}>
+    <div style={{ background: "white", borderRadius: 8, overflow: "hidden", border: "1px solid #EDE3D8", display: "flex", flexDirection: "column", transition: "border-color 0.2s" }}>
       <div style={{ position: "relative" }}>
         {p.imageUrl ? (
           <img src={p.imageUrl} alt={p.name} style={{ width: "100%", height: 130, objectFit: "cover" }} />
@@ -499,9 +493,11 @@ function ReviewSection({ reviews, sortRev, setSortRev, myRating, setMyRating, my
       {showForm && (
         <div style={{ background: "#f9fafb", borderRadius: 14, padding: "16px 18px", marginBottom: 18, border: "1px solid #f0e8e0" }}>
           <p style={{ fontSize: 13, fontWeight: 700, marginBottom: 10, textAlign: "right", color: "#374151" }}>أضف تقييمك</p>
-          <div style={{ display: "flex", gap: 3, justifyContent: "flex-end", marginBottom: 10 }}>
+          <div style={{ display: "flex", gap: 4, justifyContent: "flex-end", marginBottom: 10 }}>
             {[1,2,3,4,5].map(s => (
-              <button key={s} onClick={() => setMyRating(s)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 24, padding: 1, transition: "transform 0.1s", transform: s <= myRating ? "scale(1.25)" : "scale(1)", filter: s <= myRating ? "none" : "grayscale(1) opacity(0.3)" }}>⭐</button>
+              <button key={s} onClick={() => setMyRating(s)} style={{ background: "none", border: "none", cursor: "pointer", padding: 2, transition: "transform 0.1s", transform: s <= myRating ? "scale(1.2)" : "scale(1)" }}>
+                <Star size={24} color="#C4956A" fill={s <= myRating ? "#C4956A" : "none"} />
+              </button>
             ))}
           </div>
           <textarea value={myComment} onChange={e => setMyComment(e.target.value)} placeholder="اكتب رأيك..." rows={2} style={{ width: "100%", border: "1.5px solid #e5e7eb", borderRadius: 10, padding: "9px 12px", fontSize: 13, outline: "none", textAlign: "right", resize: "none", fontFamily: "inherit", boxSizing: "border-box", marginBottom: 10, background: "white" }} />
@@ -514,7 +510,6 @@ function ReviewSection({ reviews, sortRev, setSortRev, myRating, setMyRating, my
       {}
       {reviews.length === 0 ? (
         <div style={{ textAlign: "center", padding: "28px 0", color: "#9ca3af" }}>
-          <div style={{ fontSize: 36, marginBottom: 8 }}>⭐</div>
           <p style={{ fontSize: 14 }}>لا توجد تقييمات بعد</p>
         </div>
       ) : (
@@ -523,9 +518,9 @@ function ReviewSection({ reviews, sortRev, setSortRev, myRating, setMyRating, my
             <div key={rv.id} style={{ background: "#f9fafb", borderRadius: 14, padding: "14px 18px", border: "1px solid #f0e8e0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ display: "flex", gap: 2 }}>
-                  {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize: 13, filter: s <= rv.rating ? "none" : "grayscale(1) opacity(0.3)" }}>⭐</span>)}
+                  {[1,2,3,4,5].map(s => <Star key={s} size={14} color="#C4956A" fill={s <= rv.rating ? "#C4956A" : "none"} />)}
                 </div>
-                <div style={{ textAlign: "right" }}>
+                <div style={{ textAlign: "right", order: -1 }}>
                   <p style={{ margin: "0 0 3px", fontWeight: 700, fontSize: 13, color: "#374151" }}>{rv.Client ? `${rv.Client.firstName} ${rv.Client.lastName}` : "عميل"}</p>
                   <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>{new Date(rv.createdAt).toLocaleDateString("ar-SA", { year: "numeric", month: "short", day: "numeric" })}</p>
                 </div>
@@ -542,13 +537,12 @@ function RequestModal({ show, onClose, company, reqForm, setReqForm, reqError, r
   if (!show) return null;
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 300, padding: 20 }} onClick={onClose}>
-      <div style={{ background: "white", width: "100%", maxWidth: 460, borderRadius: 22, padding: "28px 26px", position: "relative", maxHeight: "90vh", overflowY: "auto" }} onClick={e => e.stopPropagation()} dir="rtl">
+      <div style={{ background: "white", width: "100%", maxWidth: 460, borderRadius: 14, padding: "28px 26px", position: "relative", maxHeight: "90vh", overflowY: "auto" }} onClick={e => e.stopPropagation()} dir="rtl">
         <button onClick={onClose} style={{ position: "absolute", top: 14, left: 14, background: "#f3f4f6", border: "none", cursor: "pointer", borderRadius: 9, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center" }}><X size={16} color="#6b7280" /></button>
         <h3 style={{ fontSize: 20, fontWeight: 900, margin: "0 0 4px" }}>إرسال طلب</h3>
         <p style={{ color: "#9ca3af", fontSize: 13, margin: "0 0 20px" }}>إلى: {company.ownerName}</p>
         {reqSent ? (
           <div style={{ textAlign: "center", padding: "28px 0" }}>
-            <div style={{ fontSize: 52, marginBottom: 12 }}>✅</div>
             <p style={{ fontWeight: 800, fontSize: 17 }}>تم إرسال طلبك!</p>
             <p style={{ color: "#6b7280", fontSize: 13 }}>سيتم الرد عليك قريباً</p>
           </div>
@@ -569,7 +563,7 @@ function RequestModal({ show, onClose, company, reqForm, setReqForm, reqError, r
               <label style={lbl}>رسالة إضافية</label>
               <textarea value={reqForm.message} onChange={e => setReqForm({ ...reqForm, message: e.target.value })} rows={3} style={{ ...inp, resize: "none" }} />
             </div>
-            <button onClick={handleSend} disabled={sending} style={{ width: "100%", background: "linear-gradient(135deg,#A67C52,#C4956A)", color: "white", border: "none", borderRadius: 12, padding: 14, fontWeight: 800, fontSize: 15, cursor: "pointer", opacity: sending ? 0.6 : 1, boxShadow: "0 5px 15px rgba(196,149,106,0.35)" }}>
+            <button onClick={handleSend} disabled={sending} style={{ width: "100%", background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: 14, fontWeight: 700, fontSize: 15, cursor: "pointer", opacity: sending ? 0.6 : 1 }}>
               {sending ? "جاري الإرسال..." : "إرسال الطلب ←"}
             </button>
           </>
@@ -582,12 +576,11 @@ function OrderModal({ show, onClose, products, cart, cartTotal, orderAddr, setOr
   if (!show) return null;
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 300, padding: 20 }} onClick={onClose}>
-      <div style={{ background: "white", width: "100%", maxWidth: 460, borderRadius: 22, padding: "28px 26px", position: "relative", maxHeight: "90vh", overflowY: "auto" }} onClick={e => e.stopPropagation()} dir="rtl">
+      <div style={{ background: "white", width: "100%", maxWidth: 460, borderRadius: 14, padding: "28px 26px", position: "relative", maxHeight: "90vh", overflowY: "auto" }} onClick={e => e.stopPropagation()} dir="rtl">
         <button onClick={onClose} style={{ position: "absolute", top: 14, left: 14, background: "#f3f4f6", border: "none", cursor: "pointer", borderRadius: 9, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center" }}><X size={16} color="#6b7280" /></button>
         <h3 style={{ fontSize: 20, fontWeight: 900, marginBottom: 18 }}>إتمام الطلب</h3>
         {orderDone ? (
           <div style={{ textAlign: "center", padding: "28px 0" }}>
-            <div style={{ fontSize: 52, marginBottom: 12 }}>✅</div>
             <p style={{ fontWeight: 800, fontSize: 17 }}>تم إرسال طلبك بنجاح!</p>
           </div>
         ) : (
@@ -614,7 +607,7 @@ function OrderModal({ show, onClose, products, cart, cartTotal, orderAddr, setOr
               <label style={lbl}>ملاحظات</label>
               <textarea value={orderNote} onChange={e => setOrderNote(e.target.value)} rows={2} style={{ ...inp, resize: "none" }} />
             </div>
-            <button onClick={handleOrder} disabled={ordering} style={{ width: "100%", background: "linear-gradient(135deg,#A67C52,#C4956A)", color: "white", border: "none", borderRadius: 12, padding: 14, fontWeight: 800, fontSize: 15, cursor: "pointer", opacity: ordering ? 0.6 : 1, boxShadow: "0 5px 15px rgba(196,149,106,0.35)" }}>
+            <button onClick={handleOrder} disabled={ordering} style={{ width: "100%", background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: 14, fontWeight: 700, fontSize: 15, cursor: "pointer", opacity: ordering ? 0.6 : 1 }}>
               {ordering ? "جاري التأكيد..." : `تأكيد الطلب — ${cartTotal.toLocaleString()} ر.س`}
             </button>
           </>
@@ -627,7 +620,7 @@ function InfoCard({ title, icon, mb = 0, titleExtra, children }) {
   return (
     <div style={{ background: "white", borderRadius: 18, padding: "18px 22px", marginBottom: mb, boxShadow: "0 3px 14px rgba(0,0,0,0.055)", border: "1px solid rgba(0,0,0,0.03)" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 7, marginBottom: 14 }}>
-        <span style={{ fontSize: 17 }}>{icon}</span>
+        <span style={{ width: 5, height: 5, background: "#C4956A", borderRadius: "50%", display: "inline-block", flexShrink: 0 }}></span>
         <h3 style={{ fontSize: 15, fontWeight: 800, margin: 0, color: "#111827" }}>{title}</h3>
         {titleExtra}
       </div>
@@ -708,5 +701,5 @@ function PortfolioGrid({ items }) {
 const lbl = { display: "block", fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 6, textAlign: "right" };
 const inp = { width: "100%", border: "1.5px solid #e5e7eb", borderRadius: 10, padding: "10px 13px", fontSize: 14, outline: "none", textAlign: "right", boxSizing: "border-box", fontFamily: "inherit", background: "#f9fafb", color: "#111827" };
 const contactRow = { display: "flex", alignItems: "center", gap: 12, background: "#f9fafb", borderRadius: 12, padding: "12px 14px", textDecoration: "none", color: "#374151", border: "1px solid #f0e8e0" };
-const iconBox    = { width: 40, height: 40, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 };
+const iconBox    = { width: 36, height: 36, borderRadius: 8, background: "#F0EBE3", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 };
 const cBtn       = { background: "#F0E4D0", border: "1px solid #fde8d4", borderRadius: 7, width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#C4956A" };

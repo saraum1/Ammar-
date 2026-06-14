@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Calendar, Clock, CheckCircle, XCircle, AlertCircle, ExternalLink, Building2 } from "lucide-react";
+import { Clock, CheckCircle, XCircle, AlertCircle, ExternalLink, Building2, Calendar } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 const ALL_STATUSES = ["all", "pending", "confirmed", "declined"];
@@ -28,16 +28,11 @@ export default function Meetings() {
   return (
     <div style={{ background: "#FAF7F0", minHeight: "100vh", direction: "rtl" }}>
       {}
-      <div style={{ background: "white", borderBottom: "1px solid #f0e8df", padding: "36px 48px 28px" }}>
+      <div style={{ background: "white", padding: "36px 48px 28px" }}>
         <div style={{ maxWidth: 860, margin: "0 auto" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 6 }}>
-            <div style={{ width: 48, height: 48, background: "linear-gradient(135deg,#A67C52,#C4956A)", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(196,149,106,0.3)" }}>
-              <Calendar size={22} color="white" />
-            </div>
-            <div>
-              <h1 style={{ fontSize: 26, fontWeight: 900, margin: 0, color: "#111827" }}>اجتماعاتي</h1>
-              <p style={{ fontSize: 13, color: "#9ca3af", margin: 0 }}>متابعة طلبات وتأكيدات الاجتماعات مع الشركات</p>
-            </div>
+          <div style={{ marginBottom: 6 }}>
+            <h1 style={{ fontSize: 32, fontWeight: 900, margin: "0 0 4px", color: "#111827", letterSpacing: -0.5 }}>اجتماعاتي</h1>
+            <p style={{ fontSize: 14, color: "#9ca3af", margin: 0 }}>متابعة طلبات وتأكيدات الاجتماعات مع الشركات</p>
           </div>
           {}
           {!loading && meetings.length > 0 && (
@@ -47,7 +42,7 @@ export default function Meetings() {
                 const cnt = counts[s] || 0;
                 if (!cnt) return null;
                 return (
-                  <div key={s} style={{ display: "flex", alignItems: "center", gap: 7, background: meta.bg, borderRadius: 12, padding: "6px 14px" }}>
+                  <div key={s} style={{ display: "flex", alignItems: "center", gap: 7, background: meta.bg, borderRadius: 8, padding: "6px 14px" }}>
                     <span style={{ width: 8, height: 8, borderRadius: "50%", background: meta.dot, flexShrink: 0 }} />
                     <span style={{ fontSize: 13, color: meta.color, fontWeight: 700 }}>{cnt} {meta.label}</span>
                   </div>
@@ -61,22 +56,21 @@ export default function Meetings() {
         {loading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {[1,2,3].map(i => (
-              <div key={i} style={{ background: "white", borderRadius: 18, padding: 22, boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+              <div key={i} style={{ background: "white", borderRadius: 10, padding: 22, border: "1px solid #EDE3D8" }}>
                 <div style={{ height: 14, background: "#f3f4f6", borderRadius: 6, width: "40%", marginBottom: 10 }} />
                 <div style={{ height: 10, background: "#f3f4f6", borderRadius: 6, width: "70%" }} />
               </div>
             ))}
           </div>
         ) : meetings.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "80px 20px", color: "#9ca3af" }}>
-            <Calendar size={52} style={{ margin: "0 auto 16px", opacity: 0.12 }} />
+          <div style={{ textAlign: "center", padding: "80px 20px" }}>
             <p style={{ fontSize: 17, fontWeight: 700, color: "#374151", marginBottom: 8 }}>لا توجد اجتماعات بعد</p>
-            <p style={{ fontSize: 13, margin: 0 }}>يمكنك طلب اجتماع من صفحة تفاصيل مشروعك</p>
+            <p style={{ fontSize: 13, color: "#9ca3af", margin: 0 }}>يمكنك طلب اجتماع من صفحة تفاصيل مشروعك</p>
           </div>
         ) : (
           <>
             {}
-            <div style={{ display: "flex", gap: 6, marginBottom: 20, background: "white", borderRadius: 14, padding: 6, boxShadow: "0 2px 10px rgba(0,0,0,0.05)", width: "fit-content" }}>
+            <div style={{ display: "flex", gap: 6, marginBottom: 20, border: "1px solid #EDE3D8", borderRadius: 10, padding: 4, background: "white", width: "fit-content" }}>
               {ALL_STATUSES.map(s => (
                 <button key={s} onClick={() => setFilter(s)}
                   style={{ padding: "7px 16px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: "inherit",
@@ -111,7 +105,7 @@ function MeetingRow({ meeting: m }) {
     catch { return m.proposedDate; }
   })();
   return (
-    <div style={{ background: "white", borderRadius: 18, boxShadow: "0 2px 12px rgba(0,0,0,0.05)", overflow: "hidden", borderRight: `4px solid ${meta.dot}` }}>
+    <div style={{ background: "white", borderRadius: 10, border: "1px solid #EDE3D8", overflow: "hidden" }}>
       <div style={{ padding: "18px 22px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
         {}
         <div style={{ flex: 1, minWidth: 160, textAlign: "right" }}>
@@ -131,7 +125,7 @@ function MeetingRow({ meeting: m }) {
           </span>
         </div>
         {}
-        <span style={{ display: "flex", alignItems: "center", gap: 5, background: meta.bg, color: meta.color, fontSize: 12, fontWeight: 700, padding: "5px 13px", borderRadius: 999, flexShrink: 0 }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 5, background: meta.bg, color: meta.color, fontSize: 12, fontWeight: 700, padding: "5px 13px", borderRadius: 8, flexShrink: 0 }}>
           <Icon size={12} /> {meta.label}
         </span>
       </div>

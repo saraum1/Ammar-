@@ -34,9 +34,13 @@ export default function RegisterClient() {
       newErrors.general = "All required fields are required";
     }
     if (!form.username) {
-      newErrors.username = "Username is required";
+      newErrors.username = "اسم المستخدم مطلوب";
     } else if (form.username.length < 3) {
-      newErrors.username = "Username must be at least 3 characters";
+      newErrors.username = "اسم المستخدم يجب أن يكون 3 أحرف على الأقل";
+    } else if (form.username.length > 20) {
+      newErrors.username = "اسم المستخدم لا يتجاوز 20 حرفاً";
+    } else if (!/^[a-zA-Z0-9_]+$/.test(form.username)) {
+      newErrors.username = "يُسمح فقط بأحرف إنجليزية وأرقام وشرطة سفلية (_)";
     }
     if (!form.password) {
       newErrors.password = "Password is required";
@@ -107,7 +111,7 @@ export default function RegisterClient() {
       const data = await res.json();
       if (!res.ok) { setErrors({ general: data.message || "فشل التسجيل بقوقل" }); return; }
       login(data.token, data.data);
-      navigate("/");
+      navigate("/home");
     } catch {
       setErrors({ general: "تعذر الاتصال بالسيرفر" });
     } finally {
@@ -116,7 +120,7 @@ export default function RegisterClient() {
   };
   return (
     <div className="min-h-screen bg-[#FAF7F0] py-12 px-4" dir="rtl">
-      <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-10 border border-gray-100">
+      <div className="max-w-2xl mx-auto bg-white rounded-xl p-10 border border-gray-200">
         <h2 className="text-3xl font-bold text-center text-[#1B3A2D] mb-8">
           إنشاء حساب عميل
         </h2>

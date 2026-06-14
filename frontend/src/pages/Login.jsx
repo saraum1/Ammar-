@@ -23,7 +23,7 @@ export default function Login() {
       const role = data.data?.role;
       if      (role === "admin")   navigate("/admin");
       else if (role === "company") navigate("/company/dashboard");
-      else                         navigate("/");
+      else                         navigate("/home");
     } catch {
       setErrors({ general: "تعذر الاتصال بالسيرفر" });
     } finally {
@@ -60,7 +60,7 @@ export default function Login() {
       const role = data.data?.role;
       if      (role === "admin")   navigate("/admin");
       else if (role === "company") navigate("/company/dashboard");
-      else                         navigate("/");
+      else                         navigate("/home");
     } catch (error) {
       setErrors({ general: "Cannot connect to server" });
     }
@@ -71,7 +71,7 @@ export default function Login() {
     }`;
   return (
     <div className="min-h-screen bg-[#FAF7F0] flex items-center justify-center py-12 px-4" dir="rtl">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-10 border border-gray-100">
+      <div className="max-w-md w-full bg-white rounded-xl p-10 border border-gray-200">
         <h2 className="text-3xl font-bold text-gray-900 mb-2 text-center">تسجيل الدخول</h2>
         <p className="text-gray-500 mb-8 text-sm text-center">مرحباً بك مجدداً في منصة عمار</p>
         {errors.general && (
@@ -113,7 +113,7 @@ export default function Login() {
           </div>
           <button
             type="submit"
-            className="w-full bg-[#1B3A2D] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#254E3D] shadow-md transition-all mt-6 active:scale-[0.98]"
+            className="w-full bg-[#1B3A2D] text-white py-3.5 rounded-lg font-bold text-base hover:bg-[#254E3D] transition-colors mt-6"
           >
             دخول
           </button>

@@ -8,7 +8,7 @@ import {
   ChevronDown, ChevronUp, Calendar
 } from "lucide-react";
 
-const PHASE_ICONS = ["📋","✏️","📄","⛏️","🏗️","🏠","🔧","🧱","🎨","🏆"];
+const PHASE_ICONS = ["01","02","03","04","05","06","07","08","09","10"];
 
 function phaseColor(p) {
   if (p === 100) return "#22c55e";
@@ -23,10 +23,10 @@ const STATUS_CFG = {
 };
 
 const TABS = [
-  { key: "overview",  label: "نظرة عامة",    icon: "🏗️" },
-  { key: "calc",      label: "الحاسبة",       icon: "🧮" },
-  { key: "updates",   label: "التحديثات",     icon: "🔔" },
-  { key: "notes",     label: "ملاحظاتي",      icon: "📝" },
+  { key: "overview",  label: "نظرة عامة" },
+  { key: "calc",      label: "الحاسبة" },
+  { key: "updates",   label: "التحديثات" },
+  { key: "notes",     label: "ملاحظاتي" },
 ];
 
 function fmtNum(n) {
@@ -200,9 +200,9 @@ export default function ProjectDetail() {
         body: JSON.stringify({ companyId: company.id, projectId: project.id, rating: myRating, comment: myComment || null }),
       });
       const d = await res.json();
-      if (res.status === 409) { setReviewMsg("قيّمت هذه الشركة مسبقاً ✓"); return; }
+      if (res.status === 409) { setReviewMsg("قيّمت هذه الشركة مسبقاً"); return; }
       if (!res.ok) { setReviewMsg(d.message || "حدث خطأ"); return; }
-      setReviewMsg("شكراً! تم إرسال تقييمك 🌟");
+      setReviewMsg("شكراً، تم إرسال تقييمك");
       setMyRating(0); setMyComment("");
     } catch { setReviewMsg("تعذر الاتصال"); }
     finally  { setReviewing(false); }
@@ -212,7 +212,6 @@ export default function ProjectDetail() {
   if (loading) return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#FAF7F0" }}>
       <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 40, marginBottom: 12 }}>🏗️</div>
         <p style={{ color: "#9ca3af" }}>جاري التحميل...</p>
       </div>
     </div>
@@ -249,7 +248,7 @@ export default function ProjectDetail() {
 
         {/* ===== بطاقة الملخص ===== */}
         <div style={{ background: "white", borderRadius: 24, overflow: "hidden", marginBottom: 20, boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}>
-          <div style={{ background: "linear-gradient(135deg,#fff8f2,#fef3e8)", padding: "22px 24px 18px", borderBottom: "1px solid #f0e8df" }}>
+          <div style={{ background: "white", padding: "22px 24px 18px", borderBottom: "1px solid #EDE3D8" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div style={{ textAlign: "right" }}>
                 <h1 style={{ fontSize: 22, fontWeight: 900, margin: 0, color: "#111827" }}>{project.type}</h1>
@@ -267,7 +266,7 @@ export default function ProjectDetail() {
                   <MapPin size={12} color="#C4956A" /> {project.location}
                 </span>
               )}
-              {project.budget && <span>💰 {project.budget}</span>}
+              {project.budget && <span>{project.budget}</span>}
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
               <div style={{ display: "flex", alignItems: "baseline", gap: 3 }}>
@@ -311,7 +310,7 @@ export default function ProjectDetail() {
               <div style={{ marginBottom: 16 }}>
                 <button
                   onClick={() => setMeetModal(true)}
-                  style={{ display: "flex", alignItems: "center", gap: 8, background: "linear-gradient(135deg,#eff6ff,#dbeafe)", border: "1px solid #bfdbfe", borderRadius: 14, padding: "11px 18px", cursor: "pointer", fontFamily: "inherit", color: "#2563eb", fontWeight: 700, fontSize: 13, width: "100%" }}
+                  style={{ display: "flex", alignItems: "center", gap: 8, background: "#f9fafb", border: "1px solid #EDE3D8", borderRadius: 8, padding: "11px 18px", cursor: "pointer", fontFamily: "inherit", color: "#374151", fontWeight: 700, fontSize: 13, width: "100%" }}
                 >
                   <span style={{ flex: 1, textAlign: "right" }}>احجز اجتماعاً مع {company.ownerName}</span>
                   <Calendar size={16} color="#2563eb" />
@@ -329,9 +328,6 @@ export default function ProjectDetail() {
             {project.status === "completed" && company && (
               <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid #f3f4f6" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-start", marginBottom: 14 }}>
-                  <div style={{ width: 30, height: 30, background: "#fef3c7", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <Star size={15} color="#f59e0b" fill="#f59e0b" />
-                  </div>
                   <h3 style={{ fontSize: 15, fontWeight: 800, margin: 0, color: "#111827" }}>قيّم تجربتك</h3>
                 </div>
                 {reviewMsg ? (
@@ -340,11 +336,11 @@ export default function ProjectDetail() {
                   </div>
                 ) : (
                   <>
-                    <div style={{ display: "flex", justifyContent: "flex-start", gap: 6, marginBottom: 12 }}>
-                      {[5,4,3,2,1].map(s => (
+                    <div style={{ display: "flex", justifyContent: "flex-start", gap: 4, marginBottom: 12 }}>
+                      {[1,2,3,4,5].map(s => (
                         <button key={s} onClick={() => setMyRating(s)}
-                          style={{ background: s <= myRating ? "#fef3c7" : "#f9fafb", border: `1.5px solid ${s <= myRating ? "#fbbf24" : "#e5e7eb"}`, borderRadius: 10, padding: "7px 11px", cursor: "pointer", fontSize: 20, transform: s <= myRating ? "scale(1.1)" : "scale(1)" }}>
-                          ⭐
+                          style={{ background: "none", border: "none", padding: "2px", cursor: "pointer", lineHeight: 1, transition: "transform 0.1s", transform: s <= myRating ? "scale(1.15)" : "scale(1)" }}>
+                          <Star size={30} color="#f59e0b" fill={s <= myRating ? "#f59e0b" : "none"} strokeWidth={1.5} />
                         </button>
                       ))}
                     </div>
@@ -353,8 +349,8 @@ export default function ProjectDetail() {
                       style={{ width: "100%", border: "1.5px solid #e5e7eb", borderRadius: 12, padding: "10px 14px", fontSize: 14, outline: "none", textAlign: "right", resize: "none", fontFamily: "inherit", boxSizing: "border-box", marginBottom: 12, background: "#fafafa" }}
                       onFocus={e => e.target.style.borderColor="#C4956A"} onBlur={e => e.target.style.borderColor="#e5e7eb"} />
                     <button onClick={handleReview} disabled={!myRating || reviewing}
-                      style={{ background: !myRating ? "#f3f4f6" : "linear-gradient(135deg,#A67C52,#C4956A)", color: !myRating ? "#9ca3af" : "white", border: "none", borderRadius: 12, padding: "11px 0", fontWeight: 800, fontSize: 14, cursor: !myRating ? "not-allowed" : "pointer", width: "100%", fontFamily: "inherit" }}>
-                      {reviewing ? "جاري الإرسال..." : "نشر التقييم ✨"}
+                      style={{ background: !myRating ? "#f3f4f6" : "#1B3A2D", color: !myRating ? "#9ca3af" : "white", border: "none", borderRadius: 8, padding: "11px 0", fontWeight: 700, fontSize: 14, cursor: !myRating ? "not-allowed" : "pointer", width: "100%", fontFamily: "inherit" }}>
+                      {reviewing ? "جاري الإرسال..." : "نشر التقييم"}
                     </button>
                   </>
                 )}
@@ -367,7 +363,7 @@ export default function ProjectDetail() {
         {tab === "calc" && (
           <div>
             {/* إجمالي كل المراحل */}
-            <div style={{ background: "linear-gradient(135deg,#fff8f2,#fef3e8)", borderRadius: 20, padding: "18px 22px", marginBottom: 16, border: "1px solid #fde8d0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ background: "white", borderRadius: 10, padding: "18px 22px", marginBottom: 16, border: "1px solid #EDE3D8", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div style={{ textAlign: "right" }}>
                 <p style={{ fontSize: 11, color: "#9ca3af", margin: "0 0 2px" }}>إجمالي كل المراحل</p>
                 <p style={{ fontSize: 30, fontWeight: 900, color: "#C4956A", margin: 0, lineHeight: 1 }}>
@@ -385,7 +381,7 @@ export default function ProjectDetail() {
                 const isOpen  = openPhase === i;
 
                 return (
-                  <div key={i} style={{ background: "white", borderRadius: 18, overflow: "hidden", boxShadow: "0 2px 10px rgba(0,0,0,0.05)", border: `1px solid ${isOpen ? "#fde8d0" : "transparent"}` }}>
+                  <div key={i} style={{ background: "white", borderRadius: 10, overflow: "hidden", border: `1px solid ${isOpen ? "#C4956A" : "#EDE3D8"}` }}>
                     {/* رأس المرحلة */}
                     <button
                       onClick={() => setOpenPhase(isOpen ? null : i)}
@@ -488,7 +484,7 @@ export default function ProjectDetail() {
                   ))}
                 </div>
               ) : (
-                <EmptyMsg icon="🔔" text="لا توجد تحديثات من الشركة بعد" />
+                <EmptyMsg text="لا توجد تحديثات من الشركة بعد" />
               )}
             </Card>
 
@@ -552,17 +548,17 @@ export default function ProjectDetail() {
                 {/* إرفاق صورة */}
                 <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 12, color: "#6b7280", fontWeight: 600, padding: "6px 12px", borderRadius: 8, background: "#f3f4f6", border: "1px solid #e5e7eb" }}>
                   <Image size={13} color="#6b7280" />
-                  {noteImage ? "✓ " + noteImage.name.substring(0, 16) + "..." : "إرفاق صورة"}
+                  {noteImage ? noteImage.name.substring(0, 16) + "..." : "إرفاق صورة"}
                   <input ref={fileRef} type="file" accept="image/*" onChange={handlePickImage} style={{ display: "none" }} />
                 </label>
 
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  {noteOk  && <span style={{ color: "#16a34a", fontSize: 12, fontWeight: 600 }}><CheckCircle size={13} style={{ verticalAlign: "middle" }} /> تم ✓</span>}
-                  {noteErr && <span style={{ color: "#ef4444", fontSize: 12 }}>⚠️ {noteErr}</span>}
+                  {noteOk  && <span style={{ color: "#16a34a", fontSize: 12, fontWeight: 600 }}>تم</span>}
+                  {noteErr && <span style={{ color: "#ef4444", fontSize: 12 }}>{noteErr}</span>}
                   <button
                     onClick={handleAddNote}
                     disabled={!noteText.trim() || sendingNote}
-                    style={{ background: !noteText.trim() || sendingNote ? "#f3f4f6" : "linear-gradient(135deg,#A67C52,#C4956A)", color: !noteText.trim() || sendingNote ? "#9ca3af" : "white", border: "none", borderRadius: 10, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: !noteText.trim() ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: 6, fontFamily: "inherit", boxShadow: noteText.trim() ? "0 4px 12px rgba(196,149,106,0.3)" : "none" }}
+                    style={{ background: !noteText.trim() || sendingNote ? "#f3f4f6" : "#1B3A2D", color: !noteText.trim() || sendingNote ? "#9ca3af" : "white", border: "none", borderRadius: 8, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: !noteText.trim() ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: 6, fontFamily: "inherit" }}
                   >
                     <Send size={13} />
                     {sendingNote ? "جاري..." : "إرسال"}
@@ -590,7 +586,7 @@ export default function ProjectDetail() {
                 ))}
               </div>
             ) : (
-              <EmptyMsg icon="📝" text="لا توجد ملاحظات بعد — اكتب أول ملاحظة" />
+              <EmptyMsg text="لا توجد ملاحظات بعد — اكتب أول ملاحظة" />
             )}
           </Card>
         )}
@@ -614,7 +610,6 @@ export default function ProjectDetail() {
 
             {meetOk ? (
               <div style={{ textAlign: "center", padding: "20px 0" }}>
-                <p style={{ fontSize: 36, marginBottom: 10 }}>📅</p>
                 <p style={{ fontSize: 16, fontWeight: 800, color: "#16a34a", marginBottom: 4 }}>تم إرسال الطلب!</p>
                 <p style={{ fontSize: 13, color: "#6b7280" }}>ستتلقى تأكيداً من الشركة قريباً</p>
               </div>
@@ -640,9 +635,9 @@ export default function ProjectDetail() {
                       onFocus={e => e.target.style.borderColor="#2563eb"} onBlur={e => e.target.style.borderColor="#e5e7eb"} />
                   </div>
                 </div>
-                {meetErr && <p style={{ fontSize: 12, color: "#ef4444", textAlign: "right" }}>⚠️ {meetErr}</p>}
+                {meetErr && <p style={{ fontSize: 12, color: "#ef4444", textAlign: "right" }}>{meetErr}</p>}
                 <button onClick={handleProposeMeeting} disabled={!meetDate || !meetTime || !meetTopic.trim() || sendingMeet}
-                  style={{ background: !meetDate || !meetTime || !meetTopic.trim() ? "#f3f4f6" : "linear-gradient(135deg,#2563eb,#3b82f6)", color: !meetDate || !meetTime || !meetTopic.trim() ? "#9ca3af" : "white", border: "none", borderRadius: 14, padding: "13px 0", fontWeight: 800, fontSize: 14, cursor: !meetDate || !meetTime || !meetTopic.trim() ? "not-allowed" : "pointer", width: "100%", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                  style={{ background: !meetDate || !meetTime || !meetTopic.trim() ? "#f3f4f6" : "#1B3A2D", color: !meetDate || !meetTime || !meetTopic.trim() ? "#9ca3af" : "white", border: "none", borderRadius: 8, padding: "13px 0", fontWeight: 700, fontSize: 14, cursor: !meetDate || !meetTime || !meetTopic.trim() ? "not-allowed" : "pointer", width: "100%", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
                   <Calendar size={15} /> {sendingMeet ? "جاري الإرسال..." : "إرسال طلب الاجتماع"}
                 </button>
               </div>
@@ -696,10 +691,9 @@ function Card({ title, icon, children }) {
   );
 }
 
-function EmptyMsg({ icon, text }) {
+function EmptyMsg({ text }) {
   return (
     <div style={{ textAlign: "center", padding: "20px 0", color: "#c4cad4" }}>
-      <p style={{ fontSize: 26, margin: "0 0 6px" }}>{icon}</p>
       <p style={{ fontSize: 13 }}>{text}</p>
     </div>
   );

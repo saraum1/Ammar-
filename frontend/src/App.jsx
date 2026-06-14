@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
+import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import RoleSelection from './pages/RoleSelection';
@@ -27,7 +28,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<AppLayout />}>
-          <Route path="/"               element={<Home />} />
+          <Route path="/"               element={<LandingPage />} />
+          <Route path="/home"           element={<Home />} />
           <Route path="/login"          element={<Login />} />
           <Route path="/register/role"  element={<RoleSelection />} />
           <Route path="/register/client"  element={<RegisterClient />} />
