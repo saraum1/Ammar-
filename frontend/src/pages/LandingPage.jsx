@@ -82,7 +82,7 @@ export default function LandingPage() {
             <span className="hero-divider-line"/>
           </div>
           <p className="hero-desc">
-            بيت أحلامك يبدأ من هنا.
+            بيت أحلامك يبدأ من هنا — نجمع لك أفضل شركات البناء والهندسة وموردي المواد الموثوقين في الرياض.
           </p>
           <div className="hero-actions">
             <Link to="/register/role" className="btn-primary">
