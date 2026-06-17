@@ -41,15 +41,6 @@ export default function RoleSelection() {
         </p>
       </div>
 
-      {/* تضبيب التحول بين الجانبين */}
-      <div
-        className="hidden md:block absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-28 z-20 pointer-events-none"
-        style={{
-          backdropFilter: "blur(18px)",
-          WebkitBackdropFilter: "blur(18px)",
-          background: "linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
-        }}
-      />
 
       {/* يسار: نموذج اختيار الحساب */}
       <div className="flex-1 flex items-center justify-center bg-white px-6 py-16">
