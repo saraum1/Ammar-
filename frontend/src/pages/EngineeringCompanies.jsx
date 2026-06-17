@@ -135,6 +135,9 @@ function CompanyCard({ company, badge, onView }) {
           )}
         </div>
       </div>
+      <span style={{ display: "block", textAlign: "center", background: "#1B3A2D", color: "white", fontSize: 13, fontWeight: 800, padding: "11px 0", borderRadius: 8, margin: "0 20px 20px" }}>
+        عرض
+      </span>
     </div>
   );
 }

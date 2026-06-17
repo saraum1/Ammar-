@@ -351,7 +351,7 @@ export default function CompanyDetail() {
           <h1 style={{ fontSize: 26, fontWeight: 900, color: "white", margin: 0, textShadow: "0 2px 8px rgba(0,0,0,0.35)", textAlign: "right" }}>{company.ownerName}</h1>
         </div>
       </div>
-      <div style={{ maxWidth: 740, margin: "0 auto", padding: "22px 18px 90px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "22px 18px 90px" }}>
         {}
         <div style={{ background: "white", borderRadius: 18, padding: "14px 20px", marginBottom: 16, boxShadow: "0 4px 14px rgba(0,0,0,0.06)", display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "flex-start" }}>
           <Chip icon={<MapPin size={13} color="#C4956A" />} label={company.city || "الرياض"} />

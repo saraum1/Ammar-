@@ -536,7 +536,7 @@ export default function CompanyDashboard() {
     <div style={{ background: "#FAF7F0", minHeight: "100vh" }} dir="rtl">
 
       <div style={{ background: "white", borderBottom: "1px solid #EDE3D8", padding: "16px 40px" }}>
-        <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <h1 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: "#1B3A2D" }}>لوحة تحكم الشركة</h1>
             <p style={{ color: "#9ca3af", fontSize: 12, margin: "2px 0 0" }}>مرحباً {user?.name || user?.email}</p>
@@ -557,7 +557,7 @@ export default function CompanyDashboard() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 960, margin: "0 auto", padding: "28px 40px 60px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 40px 60px" }}>
 
         {tab === "requests" && (
           <>

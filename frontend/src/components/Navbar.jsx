@@ -10,10 +10,12 @@ const BRONZE = "#C4956A";
 
 /* ── Nav link groups ── */
 const GUEST_LINKS = [
-  { to: "/",            label: "الرئيسية" },
-  { to: "/engineering", label: "الشركات الهندسية" },
-  { to: "/contracting", label: "شركات المقاولات" },
-  { to: "/materials",   label: "مواد البناء" },
+  { to: "/",          label: "الرئيسية" },
+  { to: "/#features", label: "المميزات" },
+  { to: "/#how",      label: "كيف يعمل" },
+  { to: "/#stages",   label: "خطوات البناء" },
+  { to: "/#why",      label: "لمن عمار" },
+  { to: "/#faq",      label: "الأسئلة الشائعة" },
 ];
 const CLIENT_LINKS = [
   { to: "/home",        label: "الرئيسية" },
@@ -108,6 +110,16 @@ export default function Navbar() {
   };
   const handleLogout = () => { logout(); navigate("/"); setDropOpen(false); };
 
+  const handleSectionLink = (e, to) => {
+    if (!to.startsWith("/#")) return;
+    const id = to.slice(2);
+    if (location.pathname === "/") {
+      e.preventDefault();
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      setMobileOpen(false);
+    }
+  };
+
   const navLinks =
     !token                   ? GUEST_LINKS   :
     user?.role === "client"  ? CLIENT_LINKS  :
@@ -146,9 +158,9 @@ export default function Navbar() {
         {/* Nav links — centered, flex */}
         <div className="nav-desktop-links" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 2 }}>
           {navLinks.map(link => {
-            const active = location.pathname === link.to;
+            const active = link.to.startsWith("/#") ? false : location.pathname === link.to;
             return (
-              <Link key={link.to} to={link.to} style={{
+              <Link key={link.to} to={link.to} onClick={e => handleSectionLink(e, link.to)} style={{
                 textDecoration: "none",
                 fontSize: 13.5,
                 fontWeight: active ? 700 : 500,
@@ -347,14 +359,17 @@ export default function Navbar() {
           zIndex: 49, padding: "24px 28px", overflowY: "auto",
         }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            {navLinks.map(link => (
-              <Link key={link.to} to={link.to} style={{
-                textDecoration: "none", fontSize: 17, fontWeight: 700,
-                padding: "14px 16px", borderRadius: 14, color: DARK,
-                background: location.pathname === link.to ? "#EAF0EC" : "transparent",
-                borderRight: location.pathname === link.to ? `3px solid ${BRONZE}` : "3px solid transparent",
-              }}>{link.label}</Link>
-            ))}
+            {navLinks.map(link => {
+              const mobileActive = link.to.startsWith("/#") ? false : location.pathname === link.to;
+              return (
+                <Link key={link.to} to={link.to} onClick={e => handleSectionLink(e, link.to)} style={{
+                  textDecoration: "none", fontSize: 17, fontWeight: 700,
+                  padding: "14px 16px", borderRadius: 14, color: DARK,
+                  background: mobileActive ? "#EAF0EC" : "transparent",
+                  borderRight: mobileActive ? `3px solid ${BRONZE}` : "3px solid transparent",
+                }}>{link.label}</Link>
+              );
+            })}
             {token && (
               <>
                 <div style={{ height: 1, background: "#DDD0C0", margin: "12px 0" }}/>

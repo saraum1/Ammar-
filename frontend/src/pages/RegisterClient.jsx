@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import heroBgImg from "../assets/hero-bg.png";
 export default function RegisterClient() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -119,8 +120,21 @@ export default function RegisterClient() {
     }
   };
   return (
-    <div className="min-h-screen bg-[#FAF7F0] py-12 px-4" dir="rtl">
-      <div className="max-w-2xl mx-auto bg-white rounded-xl p-10 border border-gray-200">
+    <div
+      className="min-h-screen py-12 px-4 relative"
+      style={{
+        backgroundImage: `url(${heroBgImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+      }}
+      dir="rtl"
+    >
+      <div
+        className="absolute inset-0"
+        style={{ background: "linear-gradient(160deg, rgba(15,33,25,0.96) 0%, rgba(27,58,45,0.9) 100%)" }}
+      />
+      <div className="max-w-2xl mx-auto bg-white rounded-xl p-10 border border-gray-200 relative z-10">
         <h2 className="text-3xl font-bold text-center text-[#1B3A2D] mb-8">
           إنشاء حساب عميل
         </h2>

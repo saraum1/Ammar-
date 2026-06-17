@@ -34,7 +34,7 @@ export default function MyProjects() {
     <div style={{ background: "#FAF7F0", minHeight: "100vh", direction: "rtl" }}>
       {}
       <div style={{ background: "white", padding: "36px 40px 28px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={{ marginBottom: 6 }}>
             <h1 style={{ fontSize: 32, fontWeight: 900, margin: "0 0 4px", color: "#111827", letterSpacing: -0.5 }}>مشاريعي</h1>
             <p style={{ color: "#9ca3af", fontSize: 14, margin: 0 }}>تابع تقدم مشاريعك مع الشركات</p>
@@ -48,7 +48,7 @@ export default function MyProjects() {
           )}
         </div>
       </div>
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "28px 40px 80px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 40px 80px" }}>
         {loading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 8 }}>
             {[1,2,3].map(i => <SkeletonCard key={i} />)}

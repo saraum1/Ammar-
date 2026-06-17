@@ -33,14 +33,14 @@ export default function MyOrders() {
 
       {/* Header */}
       <div style={{ background: "white", padding: "36px 48px 28px" }}>
-        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <h1 style={{ fontSize: 32, fontWeight: 900, margin: "0 0 4px", color: "#111827", letterSpacing: -0.5 }}>طلباتي</h1>
           <p style={{ fontSize: 14, color: "#9ca3af", margin: 0 }}>تتبع طلبياتك من موردي مواد البناء</p>
         </div>
       </div>
 
       {/* Body */}
-      <div style={{ maxWidth: 820, margin: "0 auto", padding: "28px 48px 80px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 48px 80px" }}>
         {loading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {[1,2,3].map(i => (
@@ -90,22 +90,14 @@ function OrderCard({ order: o, expanded, onToggle }) {
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           {expanded ? <ChevronUp size={16} color="#9ca3af" /> : <ChevronDown size={16} color="#9ca3af" />}
-          <div>
-            <p style={{ fontSize: 13, fontWeight: 800, color: "#C4956A", margin: 0 }}>
-              {Number(o.totalPrice).toLocaleString("ar-SA")} ر.س
-            </p>
-            <p style={{ fontSize: 11, color: "#9ca3af", margin: "2px 0 0" }}>
-              {new Date(o.createdAt).toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric" })}
-            </p>
-          </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ textAlign: "right" }}>
             <p style={{ fontSize: 15, fontWeight: 800, color: "#111827", margin: 0 }}>{o.Company?.ownerName || "مورد"}</p>
             <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>
               {Array.isArray(o.items) ? `${o.items.length} منتج` : ""}
             </p>
           </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           {isCancelled ? (
             <span style={{ background: "#fee2e2", color: "#991b1b", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 999 }}>
               ملغى
@@ -119,6 +111,14 @@ function OrderCard({ order: o, expanded, onToggle }) {
               {STEPS[currentStep]?.label || "معلق"}
             </span>
           )}
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 800, color: "#C4956A", margin: 0 }}>
+              {Number(o.totalPrice).toLocaleString("ar-SA")} ر.س
+            </p>
+            <p style={{ fontSize: 11, color: "#9ca3af", margin: "2px 0 0" }}>
+              {new Date(o.createdAt).toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric" })}
+            </p>
+          </div>
         </div>
       </div>
 

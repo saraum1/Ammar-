@@ -42,7 +42,7 @@ export default function ChangePassword() {
     }
   };
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4" dir="rtl">
+    <div className="min-h-screen bg-[#FAF7F0] flex items-center justify-center py-12 px-4" dir="rtl">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-10 border border-gray-100 text-right">
         <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">تغيير كلمة المرور</h2>
         {error   && <p className="text-red-500   text-sm text-center mb-4">{error}</p>}

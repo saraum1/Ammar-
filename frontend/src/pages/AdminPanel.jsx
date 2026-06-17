@@ -87,7 +87,7 @@ export default function AdminPanel() {
   return (
     <div style={{ background: "#FAF7F0", minHeight: "100vh" }} dir="rtl">
       <div style={{ background: "white", borderBottom: "1px solid #e5e7eb", padding: "28px 56px" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
           <div>
             <h1 style={{ fontSize: 26, fontWeight: 900, margin: 0 }}>لوحة إدارة عمار</h1>
             <p style={{ color: "#6b7280", margin: "4px 0 0", fontSize: 14 }}>مراجعة وموافقة طلبات الشركات</p>
@@ -99,7 +99,7 @@ export default function AdminPanel() {
           </div>
         </div>
       </div>
-      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "32px 56px 60px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 56px 60px" }}>
         {loading ? (
           <p style={{ textAlign: "center", color: "#9ca3af", padding: 60 }}>جاري التحميل...</p>
         ) : companies.length === 0 ? (

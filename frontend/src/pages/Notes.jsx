@@ -106,13 +106,13 @@ export default function Notes() {
     <div style={{ minHeight: "100vh", background: "#FAF7F0" }} dir="rtl">
 
       <div style={{ background: "white", padding: "36px 24px 28px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <h1 style={{ fontSize: 32, fontWeight: 900, margin: "0 0 4px", letterSpacing: -0.5 }}>مذكراتي</h1>
           <p style={{ color: "#9ca3af", fontSize: 14, margin: 0 }}>سجّل ملاحظاتك وتفاصيل كل مرحلة</p>
         </div>
       </div>
 
-      <div style={{ maxWidth: 860, margin: "0 auto", padding: "20px 24px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 24px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <button
           onClick={() => setShowForm(true)}
           style={{ display: "flex", alignItems: "center", gap: 8, background: "#1B3A2D", color: "white", border: "none", borderRadius: 8, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: "pointer", flexShrink: 0 }}
@@ -138,7 +138,7 @@ export default function Notes() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 860, margin: "0 auto", padding: "0 24px 80px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px 80px" }}>
         {loading ? (
           <div style={{ textAlign: "center", padding: 60, color: "#9ca3af" }}>
             <Loader size={32} style={{ margin: "0 auto 12px", opacity: 0.4 }} />

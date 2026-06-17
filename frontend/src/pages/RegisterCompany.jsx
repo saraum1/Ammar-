@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Upload, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import heroBgImg from "../assets/hero-bg.png";
 
 export default function RegisterCompany() {
   const navigate = useNavigate();
@@ -141,8 +142,21 @@ export default function RegisterCompany() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF7F0] py-12 px-4" dir="rtl">
-      <div className="max-w-3xl mx-auto bg-white rounded-xl p-10 border border-gray-200">
+    <div
+      className="min-h-screen py-12 px-4 relative"
+      style={{
+        backgroundImage: `url(${heroBgImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+      }}
+      dir="rtl"
+    >
+      <div
+        className="absolute inset-0"
+        style={{ background: "linear-gradient(160deg, rgba(15,33,25,0.96) 0%, rgba(27,58,45,0.9) 100%)" }}
+      />
+      <div className="max-w-3xl mx-auto bg-white rounded-xl p-10 border border-gray-200 relative z-10">
         <h2 className="text-3xl font-bold text-center text-[#1B3A2D] mb-8">
           تسجيل شركة جديدة
         </h2>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { GoogleLogin } from "@react-oauth/google";
+import heroBgImg from "../assets/hero-bg.png";
 export default function Login() {
   const navigate  = useNavigate();
   const { login } = useAuth();
@@ -70,8 +71,21 @@ export default function Login() {
       hasErr ? "border-red-500" : "border-gray-200 focus:border-[#C4956A]"
     }`;
   return (
-    <div className="min-h-screen bg-[#FAF7F0] flex items-center justify-center py-12 px-4" dir="rtl">
-      <div className="max-w-md w-full bg-white rounded-xl p-10 border border-gray-200">
+    <div
+      className="min-h-screen flex items-center justify-center py-12 px-4 relative"
+      style={{
+        backgroundImage: `url(${heroBgImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+      }}
+      dir="rtl"
+    >
+      <div
+        className="absolute inset-0"
+        style={{ background: "linear-gradient(160deg, rgba(15,33,25,0.96) 0%, rgba(27,58,45,0.9) 100%)" }}
+      />
+      <div className="max-w-md w-full bg-white rounded-xl p-10 border border-gray-200 relative z-10">
         <h2 className="text-3xl font-bold text-gray-900 mb-2 text-center">تسجيل الدخول</h2>
         <p className="text-gray-500 mb-8 text-sm text-center">مرحباً بك مجدداً في منصة عمار</p>
         {errors.general && (

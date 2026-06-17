@@ -237,18 +237,18 @@ export default function ProjectDetail() {
 
       {/* Breadcrumb */}
       <div style={{ background: "white", borderBottom: "1px solid #f0e8df", padding: "13px 40px" }}>
-        <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", alignItems: "center", gap: 8, fontSize: 14 }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", gap: 8, fontSize: 14 }}>
           <Link to="/my-projects" style={{ color: "#C4956A", fontWeight: 700, textDecoration: "none" }}>مشاريعي</Link>
           <ChevronRight size={14} color="#d1d5db" />
           <span style={{ color: "#374151", fontWeight: 600 }}>{project.type}</span>
         </div>
       </div>
 
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "24px 40px 80px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "24px 40px 80px" }}>
 
         {/* ===== بطاقة الملخص ===== */}
         <div style={{ background: "white", borderRadius: 24, overflow: "hidden", marginBottom: 20, boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}>
-          <div style={{ background: "white", padding: "22px 24px 18px", borderBottom: "1px solid #EDE3D8" }}>
+          <div style={{ background: "white", padding: "18px 24px 12px", borderBottom: "1px solid #EDE3D8" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div style={{ textAlign: "right" }}>
                 <h1 style={{ fontSize: 22, fontWeight: 900, margin: 0, color: "#111827" }}>{project.type}</h1>
@@ -259,8 +259,8 @@ export default function ProjectDetail() {
               </span>
             </div>
           </div>
-          <div style={{ padding: "16px 24px 20px" }}>
-            <div style={{ display: "flex", justifyContent: "flex-start", gap: 16, fontSize: 13, color: "#6b7280", marginBottom: 14 }}>
+          <div style={{ padding: "10px 24px 16px" }}>
+            <div style={{ display: "flex", justifyContent: "flex-start", gap: 16, fontSize: 13, color: "#6b7280", marginBottom: 10 }}>
               {project.location && (
                 <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
                   <MapPin size={12} color="#C4956A" /> {project.location}
@@ -296,7 +296,6 @@ export default function ProjectDetail() {
                 boxShadow:  tab === t.key ? "0 4px 12px rgba(196,149,106,0.3)" : "none",
               }}
             >
-              <span style={{ fontSize: 15, display: "block", marginBottom: 2 }}>{t.icon}</span>
               {t.label}
             </button>
           ))}
@@ -682,7 +681,6 @@ function Card({ title, icon, children }) {
     <div style={{ background: "white", borderRadius: 20, overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
       {(title || icon) && (
         <div style={{ padding: "16px 20px 12px", borderBottom: "1px solid #f7f7f7", display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-start" }}>
-          {icon && <div style={{ width: 30, height: 30, background: "#F0E4D0", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center" }}>{icon}</div>}
           <h2 style={{ fontSize: 15, fontWeight: 800, margin: 0, color: "#111827" }}>{title}</h2>
         </div>
       )}

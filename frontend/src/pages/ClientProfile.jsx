@@ -123,7 +123,7 @@ export default function ClientProfile() {
   return (
     <div className="min-h-screen bg-[#FAF7F0]" dir="rtl">
       <div className="bg-white px-8 py-6">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-black">حسابي</h1>
             <p className="text-gray-500 text-sm mt-1">{user?.email}</p>
@@ -134,7 +134,7 @@ export default function ClientProfile() {
           </div>
         </div>
       </div>
-      <div className="max-w-2xl mx-auto px-8 py-8">
+      <div className="max-w-5xl mx-auto px-8 py-8">
         {tab === "profile" && (
           <div className="space-y-5">
             <div className="bg-white rounded-xl p-6 border border-gray-200">

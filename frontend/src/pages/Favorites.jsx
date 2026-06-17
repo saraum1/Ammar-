@@ -27,7 +27,7 @@ export default function Favorites() {
     <div style={{ background: "#FAF7F0", minHeight: "100vh", direction: "rtl" }}>
       {}
       <div style={{ background: "white", padding: "36px 48px 28px" }}>
-        <div style={{ maxWidth: 1060, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
           <div>
             <h1 style={{ fontSize: 32, fontWeight: 900, margin: "0 0 4px", color: "#111827", letterSpacing: -0.5 }}>مفضلاتي</h1>
             <p style={{ fontSize: 14, color: "#9ca3af", margin: 0 }}>المنتجات التي حفظتها من موردي مواد البناء</p>
@@ -38,7 +38,7 @@ export default function Favorites() {
         </div>
       </div>
       {}
-      <div style={{ maxWidth: 1060, margin: "0 auto", padding: "32px 48px 80px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 48px 80px" }}>
         {loading ? (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px,1fr))", gap: 20 }}>
             {[1,2,3,4].map(i => <SkeletonCard key={i} />)}

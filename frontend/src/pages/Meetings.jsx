@@ -29,7 +29,7 @@ export default function Meetings() {
     <div style={{ background: "#FAF7F0", minHeight: "100vh", direction: "rtl" }}>
       {}
       <div style={{ background: "white", padding: "36px 48px 28px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={{ marginBottom: 6 }}>
             <h1 style={{ fontSize: 32, fontWeight: 900, margin: "0 0 4px", color: "#111827", letterSpacing: -0.5 }}>اجتماعاتي</h1>
             <p style={{ fontSize: 14, color: "#9ca3af", margin: 0 }}>متابعة طلبات وتأكيدات الاجتماعات مع الشركات</p>
@@ -52,7 +52,7 @@ export default function Meetings() {
           )}
         </div>
       </div>
-      <div style={{ maxWidth: 860, margin: "0 auto", padding: "28px 48px 80px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 48px 80px" }}>
         {loading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {[1,2,3].map(i => (
